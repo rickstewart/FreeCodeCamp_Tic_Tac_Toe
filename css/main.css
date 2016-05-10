@@ -1,0 +1,111 @@
+/**
+ * Created by Rick Stewart on 05/10/2016.
+ */
+
+@import url(https://fonts.googleapis.com/css?family=Fugaz+One|Fontdiner+Swanky);
+
+body {
+    color: #7B56A7;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.05em;
+    font-weight: 400;
+    height: auto !important;
+    height: 100%;
+    line-height: 2.4rem;
+    min-height: 100%;
+    display: flex;
+    background: url("../images/starfield.gif");
+}
+
+#page-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+header {
+    background: linear-gradient(to left, rgba(226, 170, 106, 1), rgba(255, 174, 76, 1));
+    border-bottom: 2px solid #6368B1;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    font-family: 'Fontdiner Swanky', cursive;
+    display: inline-flex;
+    align-items: center;
+    position: fixed;
+    padding-top: 21px;
+    width: 100%;
+    z-index: 1000;
+}
+
+header img {
+    width: 120px;
+    height: 110px;
+    margin: 0 0 18px 16%;
+}
+
+#header-span-left {
+    flex-basis: 30%;
+}
+
+#header-span-right {
+    flex-basis: 70%;
+    padding: 0 0 0 6%;
+}
+
+#header-text1 {
+    font-size: 4.6em;
+    margin-top: 14px;
+}
+
+#header-text2 {
+    color: #4d346d;
+    font-size: 2.8em;
+    margin-top: 20px;
+}
+
+#header-about {
+    text-align: right;
+    padding-right: 6%;
+    text-decoration: underline;
+    font-size: 1.4em;
+}
+
+a:link {
+    color: #FFDADF;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #FFDADF;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #fca4af;
+    text-decoration: none;
+}
+
+a:active {
+    color: #d67784;
+    text-decoration: none;
+}
+
+#main-container {
+    flex-flow: column;
+    width: 50%;
+    min-width: 500px;
+    margin: 0 auto;
+}
+
+/* Responsive section */
+
+@media all and (max-width: 900px) {
+
+
+}
+
+@media all and (max-width: 700px) {
+
+
+}
