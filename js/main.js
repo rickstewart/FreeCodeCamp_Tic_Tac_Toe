@@ -8,3 +8,7 @@
  * @param data.logo
  *
  */
+(function() {
+    var paper = new Raphael(document.getElementById('canvas_container'), 500, 500);
+    paper.drawnLine(100, 100, 200, 200, wobble).attr({stroke: 'red'});
+})();

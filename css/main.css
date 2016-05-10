@@ -39,8 +39,8 @@ header {
 }
 
 header img {
-    width: 120px;
-    height: 110px;
+    width: 110px;
+    height: 100px;
     margin: 0 0 18px 16%;
 }
 
@@ -50,52 +50,57 @@ header img {
 
 #header-span-right {
     flex-basis: 70%;
-    padding: 0 0 0 6%;
+    padding: 0 0 0 0;
 }
 
 #header-text1 {
     font-size: 4.6em;
-    margin-top: 14px;
+    margin: 14px 0 8px 0;
 }
 
 #header-text2 {
     color: #4d346d;
     font-size: 2.8em;
-    margin-top: 20px;
+    margin: 24px 0 0 20px;
 }
 
 #header-about {
     text-align: right;
     padding-right: 6%;
-    text-decoration: underline;
+    text-decoration: none;
     font-size: 1.4em;
 }
 
 a:link {
-    color: #FFDADF;
+    color: #4d346d;
     text-decoration: none;
 }
 
 a:visited {
-    color: #FFDADF;
+    color: #4d346d;
     text-decoration: none;
 }
 
 a:hover {
-    color: #fca4af;
+    color: #ba1fb2;
     text-decoration: none;
 }
 
 a:active {
-    color: #d67784;
+    color: #f40ce9;
     text-decoration: none;
 }
 
 #main-container {
-    flex-flow: column;
-    width: 50%;
-    min-width: 500px;
+    width: 60%;
     margin: 0 auto;
+}
+
+#canvas_container {
+    width: 500px;
+    height: 500px;
+    border: 1px solid darkred;
+    margin: 180px auto 0 auto;
 }
 
 /* Responsive section */
