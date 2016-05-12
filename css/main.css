@@ -15,6 +15,7 @@ body {
     line-height: 2.4rem;
     min-height: 100%;
     display: flex;
+    overflow : hidden;
     background: url("../images/starfield.gif");
 }
 
@@ -54,13 +55,14 @@ header img {
 }
 
 #header-text1 {
-    font-size: 4.6em;
-    margin: 14px 0 8px 0;
+    font-size: 5.2em;
+    margin: 24px 0 8px 0;
 }
 
 #header-text2 {
     color: #4d346d;
     font-size: 2.8em;
+    letter-spacing: 0.05em;
     margin: 24px 0 0 20px;
 }
 
@@ -92,15 +94,20 @@ a:active {
 }
 
 #main-container {
-    width: 60%;
+    height: 100%;
+    width: 100%;
     margin: 0 auto;
+    display: flex;
 }
 
 #canvas_container {
-    width: 500px;
-    height: 500px;
-    border: 1px solid darkred;
-    margin: 180px auto 0 auto;
+    margin: 0 auto;
+    background-color: orange;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
 }
 
 /* Responsive section */
