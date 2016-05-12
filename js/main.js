@@ -9,7 +9,7 @@
  *
  */
 /* function tictactoe() is the main container to scope the shared variables and methods. */
-function tictactoe() {
+(function tictactoe() {
     'use strict';
     var viewportHeight;                          // holds the height dimension of the viewport.
     var viewportWidth;                           // holds the width dimension of the viewport.
@@ -18,13 +18,14 @@ function tictactoe() {
     var zeroCoordinateX;                         // holds the X coordinate of the upper left corner of the board.
     var zeroCoordinateY;                         // holds the Y coordinate of the upper left corner of the board.
     var paper;                                   // holds a reference to the Raphael object.
+    var svg;                                     // holds a reference to the svg object.
 
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
-        var svg = document.querySelector('svg');
+        paper = Raphael('canvas_container', boardLengthOfSide, boardLengthOfSide);
+        svg = document.querySelector('svg');
         svg.removeAttribute('width');  // Raphael sets an absolute width on svg, remove this for proper scaling.
         svg.removeAttribute('height'); // Raphael sets an absolute height on svg, remove this for proper scaling.
-        paper = Raphael(zeroCoordinateX, zeroCoordinateY, boardLengthOfSide, boardLengthOfSide);
     }
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
@@ -47,18 +48,20 @@ function tictactoe() {
 
     /* function drawBoard() paints the graphics unto the browser window. */
     function drawBoard() {
-        paper.drawnRect(0, 0, boardLengthOfSide, boardLengthOfSide, 0.1).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnRect(0, 0, boardLengthOfSide + 40, boardLengthOfSide + 40, 0.1).attr({'stroke': 'red', 'stroke-width': 2});
     }
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
-    $(window).on('resize orientationChange', function (event) {
+    $(window).on('resize orientationChange', function () {
         calculateBoardDimensions();
         paper.clear();
         drawBoard();
     });
+
+    /* run at start of program */
     init();
     $(window).trigger('resize');
-}
+})();
 
 //paper.drawnRect(10,10,600,600,4).attr({"fill":"#17A9C6", "stroke":"#2A6570", "stroke-width":4});
 
