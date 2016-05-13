@@ -9,6 +9,17 @@
  *
  */
 
+/*
+ :::: This shows how the Game Board is mapped - zero indexed for array indexing. ::::
+
+ 0 | 1 | 2
+ ---------
+ 3 | 4 | 5
+ ---------
+ 6 | 7 | 8
+
+ */
+
 /* function tictactoe() is the main container to scope the shared variables and methods. */
 (function tictactoe() {
     'use strict';
@@ -20,6 +31,8 @@
     var zeroCoordinateY;                         // holds the Y coordinate of the upper left corner of the board.
     var paper;                                   // holds a reference to the Raphael object.
     var svg;                                     // holds a reference to the svg object.
+    var moves;                                   // holds player and AI game moves.
+    var coordCenterSquare;                       // holds map of (x, y) of center of each board square.
 
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
@@ -37,38 +50,33 @@
         zeroCoordinateX = (viewportWidth / 2) - (gameboardLengthOfSide / 2);  // find upper left corner of container - X coordinate.
         zeroCoordinateY = headerHeight + 60; // find upper left corner of container - Y coordinate. ( 60 pixels down from header )
     }
-    
-    /* function init() runs at the beginning of the program to initialize variables and settings. */
-    function init() {
-        calculateBoardDimensions();
-        paper = Raphael('canvas_container', gameboardLengthOfSide, gameboardLengthOfSide);
-        //svg = document.querySelector('svg');
-        // svg.attr({'width': gameboardLengthOfSide});
-        // svg.attr({'height': gameboardLengthOfSide});
-        // svg.removeAttribute('width');  // Raphael sets an absolute width on svg, remove this for proper scaling.
-        // svg.removeAttribute('height'); // Raphael sets an absolute height on svg, remove this for proper scaling.
-    }
-
-
 
     /* function drawBoard() paints the graphics unto the browser window. */
     function drawBoard() {
-        paper.setViewBox(0, 5, gameboardLengthOfSide, gameboardLengthOfSide, true);
-        paper.drawnRect(10, 10, gameboardLengthOfSide / 2, gameboardLengthOfSide / 2, 2).attr({'stroke': 'red', 'stroke-width': 2});
-        paper.add([
-            {
-                type: 'rect',
-                x: 20,
-                y: 20,
-                width: 100,
-                height: 100,
-                r: 40,
-                fill: 'blue'
-            }]);
-        paper.drawnLine(50, 50, 200, 200, 2).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnLine(20, 132, 380, 132, 2).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnLine(20, 262, 380, 264, 2).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnLine(132, 20, 132, 380, 2).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnLine(262, 20, 262, 380, 2).attr({'stroke': 'red', 'stroke-width': 2});
+    }
+
+    /* function init() runs at the beginning of the program to initialize variables and settings. */
+    function init() {
+        moves = ['U', 'U', 'U', 'U', 'U', 'U','U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
+        coordCenterSquare = [[56, 56], [188, 56], [320, 56], [56, 188], [188, 188], [320, 188], [56, 320], [188, 320], [320, 320]];
+        calculateBoardDimensions();
+        paper = Raphael('canvas_container');     // create new Raphael object.
+        paper.setViewBox(0, 0, 400, 400, true);  // anchor viewbox to upper left corner of canvas_container, size 400 X 400 px.
+        svg = document.querySelector('svg');
+        svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
+        svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
+        drawBoard();
+    }
+
+    /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer value between 1 - 9
+     * and corresponds to the board position to place the X. */
+    function drawX(square) {
         paper.drawnCircularArc(200, 200, 20, 90, 270).attr({'stroke': 'blue', 'stroke-width': 4});
         paper.drawnCircularArc(162, 200, 20, 270, 90).attr({'stroke': 'blue', 'stroke-width': 4});
-        paper.path('M30 230H390');
     }
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
@@ -80,5 +88,4 @@
 
     /* run at start of program */
     init();
-    $(window).trigger('resize');
-}) ();
+})();
