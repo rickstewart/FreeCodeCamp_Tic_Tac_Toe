@@ -55,24 +55,24 @@
      * and corresponds to the board position to place the O. */
     function drawO(square) {
         // paper.drawnCircle(centerX, centerY, radius, wobble)
-        paper.drawnCircle(coordCenterSquare[square][0], coordCenterSquare[square][1], 23, 3).attr({'stroke': 'blue', 'stroke-width': 3}); //  use +20px offset from x center.
+        paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 3}); //  use +20px offset from x center.
     }
 
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
      * and corresponds to the board position to place the X. */
     function drawX(square) {
         //  use +20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] + 20, coordCenterSquare[square][1], 20, 90, 270).attr({'stroke': 'blue', 'stroke-width': 3});
+        paper.drawnCircularArc(coordCenterSquare[square][0] + 26, coordCenterSquare[square][1] + 17, 20, 90, 270).attr({'stroke': 'blue', 'stroke-width': 3});
         //  use -20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] - 20, coordCenterSquare[square][1], 20, 270, 90).attr({'stroke': 'blue', 'stroke-width': 3});
+        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 90).attr({'stroke': 'blue', 'stroke-width': 3});
     }
 
     /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
     function addClickdetectPad() {
         var temp;
         for(var i = 0; i < coordCenterSquare.length; i+=1) {
-             temp = 'rect' + i;
-             temp = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 110, 110).attr({'stroke': 'red', 'stroke-width': 2, 'fill':'green'});
+            temp = 'rect' + i;
+            paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({'stroke': '#000'}).attr('id', temp);
         }
     }
 
@@ -94,7 +94,7 @@
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U','U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
-        coordCenterSquare = [[66, 70], [198, 70], [324, 70], [66, 194], [198, 194], [324, 194], [66, 320], [198, 320], [324, 320]];
+        coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
         calculateBoardDimensions();
         paper = Raphael('canvas_container');     // create new Raphael object.
         paper.setViewBox(0, 0, 400, 400, true);  // anchor viewbox to upper left corner of canvas_container, size 400 X 400 px.
@@ -105,7 +105,7 @@
     }
 
     /* Listener added to detect a player has made a move. */
-    $(paper).click(function(e) {
+    $('#rect0').click(function(e) {
         var offset = $(this).offset();
         alert(e.pageX - offset.left);
         alert(e.pageY - offset.top);
