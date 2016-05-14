@@ -33,7 +33,7 @@
     var svg;                                     // holds a reference to the svg object.
     var moves;                                   // holds player and AI game moves.
     var coordCenterSquare;                       // holds map of (x, y) of center of each board square.
-
+    var rect0, rect1, rect2, rect3, rect4, rect5, rect6, rect7, rect8; // one for each game board square.
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
@@ -51,18 +51,50 @@
         zeroCoordinateY = headerHeight + 60; // find upper left corner of container - Y coordinate. ( 60 pixels down from header )
     }
 
+    /* function drawO() draws a stylized O on the board. The parameter 'square' is an integer value from 0 - 8
+     * and corresponds to the board position to place the O. */
+    function drawO(square) {
+        // paper.drawnCircle(centerX, centerY, radius, wobble)
+        paper.drawnCircle(coordCenterSquare[square][0], coordCenterSquare[square][1], 23, 3).attr({'stroke': 'blue', 'stroke-width': 3}); //  use +20px offset from x center.
+    }
+
+    /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
+     * and corresponds to the board position to place the X. */
+    function drawX(square) {
+        //  use +20px offset from x center.
+        paper.drawnCircularArc(coordCenterSquare[square][0] + 20, coordCenterSquare[square][1], 20, 90, 270).attr({'stroke': 'blue', 'stroke-width': 3});
+        //  use -20px offset from x center.
+        paper.drawnCircularArc(coordCenterSquare[square][0] - 20, coordCenterSquare[square][1], 20, 270, 90).attr({'stroke': 'blue', 'stroke-width': 3});
+    }
+
+    /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
+    function addClickdetectPad() {
+        var temp;
+        for(var i = 0; i < coordCenterSquare.length; i+=1) {
+             temp = 'rect' + i;
+             temp = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 110, 110).attr({'stroke': 'red', 'stroke-width': 2, 'fill':'green'});
+        }
+    }
+
     /* function drawBoard() paints the graphics unto the browser window. */
     function drawBoard() {
-        paper.drawnLine(20, 132, 380, 132, 2).attr({'stroke': 'red', 'stroke-width': 2});
-        paper.drawnLine(20, 262, 380, 264, 2).attr({'stroke': 'red', 'stroke-width': 2});
-        paper.drawnLine(132, 20, 132, 380, 2).attr({'stroke': 'red', 'stroke-width': 2});
-        paper.drawnLine(262, 20, 262, 380, 2).attr({'stroke': 'red', 'stroke-width': 2});
+        moves = ['U', 'X', 'O', 'U', 'O', 'O','X', 'X', 'X'];
+        paper.drawnLine(20, 132, 380, 132, 5).attr({'stroke': 'red', 'stroke-width': 2});  // draw 4 lines of game board.
+        paper.drawnLine(20, 262, 380, 264, 5).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnLine(132, 20, 132, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
+        paper.drawnLine(262, 20, 262, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
+        addClickdetectPad();
+        for(var i = 0; i < moves.length; i+=1) {          // iterate over array of moves on put them on the game board.
+            if((moves[i] !== 'U')) {
+                moves[i] === 'X' ? drawX(i) : drawO(i);
+            }
+        }
     }
 
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U','U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
-        coordCenterSquare = [[56, 56], [188, 56], [320, 56], [56, 188], [188, 188], [320, 188], [56, 320], [188, 320], [320, 320]];
+        coordCenterSquare = [[66, 70], [198, 70], [324, 70], [66, 194], [198, 194], [324, 194], [66, 320], [198, 320], [324, 320]];
         calculateBoardDimensions();
         paper = Raphael('canvas_container');     // create new Raphael object.
         paper.setViewBox(0, 0, 400, 400, true);  // anchor viewbox to upper left corner of canvas_container, size 400 X 400 px.
@@ -72,12 +104,12 @@
         drawBoard();
     }
 
-    /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer value between 1 - 9
-     * and corresponds to the board position to place the X. */
-    function drawX(square) {
-        paper.drawnCircularArc(200, 200, 20, 90, 270).attr({'stroke': 'blue', 'stroke-width': 4});
-        paper.drawnCircularArc(162, 200, 20, 270, 90).attr({'stroke': 'blue', 'stroke-width': 4});
-    }
+    /* Listener added to detect a player has made a move. */
+    $(paper).click(function(e) {
+        var offset = $(this).offset();
+        alert(e.pageX - offset.left);
+        alert(e.pageY - offset.top);
+    });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
     $(window).on('resize orientationChange', function () {
