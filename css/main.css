@@ -109,6 +109,7 @@ a:active {
 #canvas_container {
     margin: 200px auto 0 auto;
     background-color: orange;
+    border-radius: 20px;
 }
 
 svg {
