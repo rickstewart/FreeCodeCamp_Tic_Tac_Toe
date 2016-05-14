@@ -2,12 +2,12 @@
  * Created by Rick Stewart on 05/10/2016.
  */
 
-@import url(https://fonts.googleapis.com/css?family=Fugaz+One|Fontdiner+Swanky);
+@import url(https://fonts.googleapis.com/css?family=font-family=Indie+Flower|Fontdiner+Swanky);
 
 body {
     box-sizing: border-box;
     color: #7B56A7;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Fontdiner Swanky', cursive;
     font-size: 1.05em;
     font-weight: 400;
     height: auto !important;
@@ -30,7 +30,6 @@ header {
     background: linear-gradient(to left, rgba(226, 170, 106, 1), rgba(255, 174, 76, 1));
     border-bottom: 2px solid #ffed4c;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
-    font-family: 'Fontdiner Swanky', cursive;
     align-items: center;
     position: fixed;
     display: inline-flex;
@@ -100,16 +99,37 @@ a:active {
 }
 
 #main-container {
+    margin: 200px auto 100px auto;
+    font-family: 'Indie Flower', cursive;
+    color: orange;
+    font-size: 1.5em;
     height: 100%;
     width: 100%;
+    display: block;
+}
+
+#radio-span {
     margin: 0 auto;
+}
+
+#radio-container {
     display: flex;
+    border: solid 0 black;
+    height: 30px;
+}
+
+#radioO-label {
+    color: #ff6600;
 }
 
 #canvas_container {
-    margin: 200px auto 0 auto;
+    display: flex;
     background-color: orange;
+    border: solid 0 black;
     border-radius: 20px;
+    max-height: 500px;
+    max-width: 500px;
+    margin: 10px auto 0 auto;
 }
 
 svg {

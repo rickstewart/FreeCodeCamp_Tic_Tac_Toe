@@ -30,7 +30,18 @@
       </span>
     </span>
     </header>
-    <div id="main-container" class="row">
+    <div id="main-container" class="column">
+        <div id="radio-container">
+            <span id="radio-span">
+            <span>Choose One To Play: <span id="X">X</span></span>
+            <span>
+                <input type="radio" name="radio" id="radioX"/>
+                <label for="radioX"> <span id="O">O</span> </label>
+                <input type="radio" name="radio" id="radioO"/>
+                <label id="radioO-label" for="radioO"> ( X Always Goes First )</label>
+            </span>
+            </span>
+        </div>
         <div id="canvas_container"></div>
     </div> <!-- end main-container -->
 </div>  <!-- end page-wrapper -->
