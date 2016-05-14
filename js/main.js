@@ -33,7 +33,7 @@
     var svg;                                     // holds a reference to the svg object.
     var moves;                                   // holds player and AI game moves.
     var coordCenterSquare;                       // holds map of (x, y) of center of each board square.
-    var rect0, rect1, rect2, rect3, rect4, rect5, rect6, rect7, rect8; // one for each game board square.
+    var lastClickedSquare;                       // holds the name of the last clicked game board square.
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
@@ -62,17 +62,20 @@
      * and corresponds to the board position to place the X. */
     function drawX(square) {
         //  use +20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] + 26, coordCenterSquare[square][1] + 17, 20, 90, 270).attr({'stroke': 'blue', 'stroke-width': 3});
+        paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 3});
         //  use -20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 90).attr({'stroke': 'blue', 'stroke-width': 3});
+        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 3});
     }
 
     /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
     function addClickdetectPad() {
         var temp;
+        var temp2;
         for(var i = 0; i < coordCenterSquare.length; i+=1) {
-            temp = 'rect' + i;
-            paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({'stroke': '#000'}).attr('id', temp);
+            temp = i;
+            temp2 = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({'stroke': '#ffa500', 'fill': '#ffa500'});
+            temp2.node.setAttribute('class', 'clickPad');
+            temp2.node.setAttribute('id', temp);
         }
     }
 
@@ -104,11 +107,10 @@
         drawBoard();
     }
 
-    /* Listener added to detect a player has made a move. */
-    $('#rect0').click(function(e) {
-        var offset = $(this).offset();
-        alert(e.pageX - offset.left);
-        alert(e.pageY - offset.top);
+    /* Listener added to detect when a player has made a move, and which square was clicked. */
+    $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for dynamically created content.
+        lastClickedSquare = e.currentTarget.id;
+        drawX(lastClickedSquare);
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
