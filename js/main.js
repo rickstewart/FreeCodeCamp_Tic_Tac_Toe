@@ -3,11 +3,6 @@
  */
 
 /**
- * set JSHint not to flag these variables as 'unresolved variable'
- * @param Raphael
- */
-
-/**
  :::: This shows how the Game Board is mapped - zero indexed for array indexing. ::::
 
  0 | 1 | 2
@@ -71,7 +66,7 @@
 
     /*  */
     function makeMove(square) {
-        if(playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
+        if (playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
             moves[square] = playerPiece;                           // record move.
             playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
         }
@@ -81,7 +76,7 @@
     function addClickdetectPad() {
         var temp;
         var temp2;
-        for(var i = 0; i < coordCenterSquare.length; i+=1) {
+        for (var i = 0; i < coordCenterSquare.length; i++) {
             temp = i;
             temp2 = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({'stroke': '#ffa500', 'fill': '#ffa500'});
             temp2.node.setAttribute('class', 'clickPad');
@@ -96,8 +91,8 @@
         paper.drawnLine(132, 20, 132, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
         paper.drawnLine(262, 20, 262, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
         addClickdetectPad();
-        for(var i = 0; i < moves.length; i+=1) {          // iterate over array of moves on put them on the game board.
-            if((moves[i] !== 'U')) {
+        for (var i = 0; i < moves.length; i++) {          // iterate over array of moves on put them on the game board.
+            if ((moves[i] !== 'U')) {
                 moves[i] === 'X' ? drawX(i) : drawO(i);
             }
         }
@@ -119,30 +114,29 @@
         svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
         drawBoard();
     }
-    
+
     /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
-    $(':radio').click(function(e){
+    $(':radio').click(function(e) {
         document.getElementById('radioO').disabled = true;
         document.getElementById('radioX').disabled = true;
         movesCounter++;
-        if(e.currentTarget.id === 'radioX') {
+        if (e.currentTarget.id === 'radioX') {
             playerPiece = 'X';
-            xRef.style.backgroundColor='#FFA500';          //  style radio button label X.
-            xRef.style.color='black';
-            xRef.style.border='solid 2px #7B56A7';
-            xRef.style.borderRadius='0.6em';
-            xRef.style.padding='1px 0 1px 5px';
-            xRef.style.margin='0 5px 0 0';
+            xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
+            xRef.style.color = 'black';
+            xRef.style.border = 'solid 2px #7B56A7';
+            xRef.style.borderRadius = '0.6em';
+            xRef.style.padding = '1px 0 1px 5px';
+            xRef.style.margin = '0 5px 0 0';
         }
         else {
             playerPiece = 'O';
-            oRef.style.backgroundColor='#FFA500';          //  style radio button label O.
-            oRef.style.color='black';
-            oRef.style.border='solid 2px #7B56A7';
-            oRef.style.borderRadius='0.6em';
-            oRef.style.padding='1px 3px 1px 2px';
-            oRef.style.margin='0 5px 0 0';
-
+            oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
+            oRef.style.color = 'black';
+            oRef.style.border = 'solid 2px #7B56A7';
+            oRef.style.borderRadius = '0.6em';
+            oRef.style.padding = '1px 3px 1px 2px';
+            oRef.style.margin = '0 5px 0 0';
         }
         play();
     });
@@ -154,7 +148,7 @@
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
-    $(window).on('resize orientationChange', function () {
+    $(window).on('resize orientationChange', function() {
         calculateBoardDimensions();
         paper.clear();  // working.
         drawBoard();
@@ -162,13 +156,14 @@
 
     /* function evaluateBoard() tests the current state of all moves to test for a win or tie. */
     function evaluateBoard() {
-
+        ;
     }
     
     /* function play() sets up a turn based loop to control the flow of the game. */
-    play() {
-        if(playerPiece === 'O')
-
+    function play() {
+        if (playerPiece === 'O' && movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
+            ;
+        }
     }
 
     /* run initialize at start of program */
