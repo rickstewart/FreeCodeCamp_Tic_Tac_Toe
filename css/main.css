@@ -67,7 +67,7 @@ header img {
     font-size: 2.8em;
     letter-spacing: 0.05em;
     padding: 1px;
-    margin: 10px 0 0 20px;
+    margin: 10px 0 0 30px;
 }
 
 #header-about {
@@ -99,7 +99,7 @@ a:active {
 }
 
 #main-container {
-    margin: 200px auto 100px auto;
+    margin: 160px auto 10px auto;
     font-family: 'Indie Flower', cursive;
     color: orange;
     font-size: 1.5em;
@@ -118,8 +118,14 @@ a:active {
     height: 30px;
 }
 
+#O {
+    font-weight: normal;
+}
+
 #radioO-label {
     color: #ff6600;
+    margin-left: 40px;
+    font-weight: normal;
 }
 
 #canvas_container {
@@ -129,7 +135,7 @@ a:active {
     border-radius: 20px;
     max-height: 500px;
     max-width: 500px;
-    margin: 10px auto 0 auto;
+    margin: 30px auto 0 auto;
 }
 
 svg {
