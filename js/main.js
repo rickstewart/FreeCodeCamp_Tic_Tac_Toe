@@ -32,6 +32,7 @@
     var moves;                                   // holds player and AI game moves.
     var coordCenterSquare;                       // holds map of (x, y) of center of each board square.
     var lastClickedSquare;                       // holds the name of the last clicked game board square.
+    var movesCounter;                            // holds a running count of moves made.
     var playerPiece;                             // holds player's choice of playing X ro O.
     var xRef;                                    // holds a reference to radio button X label.
     var oRef;                                    // holds a reference to radio button O label.
@@ -68,6 +69,14 @@
         paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 4});
     }
 
+    /*  */
+    function makeMove(square) {
+        if(playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
+            moves[square] = playerPiece;                           // record move.
+            playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
+        }
+    }
+
     /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
     function addClickdetectPad() {
         var temp;
@@ -98,6 +107,7 @@
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
         playerPiece = '';
+        movesCounter = 0;
         xRef = document.getElementById('X');
         oRef = document.getElementById('O');
         coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
@@ -108,13 +118,13 @@
         svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
         svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
         drawBoard();
-        //play();
     }
     
     /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
     $(':radio').click(function(e){
         document.getElementById('radioO').disabled = true;
         document.getElementById('radioX').disabled = true;
+        movesCounter++;
         if(e.currentTarget.id === 'radioX') {
             playerPiece = 'X';
             xRef.style.backgroundColor='#FFA500';          //  style radio button label X.
@@ -134,24 +144,14 @@
             oRef.style.margin='0 5px 0 0';
 
         }
+        play();
     });
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for Listener on dynamically created content.
         lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-        if(playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
-            moves[lastClickedSquare] = playerPiece;                // record move.
-            playerPiece === 'X' ? drawX(lastClickedSquare) : drawO(lastClickedSquare);  // update game board.
-        }
+        makeMove(lastClickedSquare);
     });
-
-    /*  */
-    // makeMove(square) {
-    //     if(playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
-    //         moves[square] = playerPiece;                           // record move.
-    //         playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
-    //     }
-    // }
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
     $(window).on('resize orientationChange', function () {
@@ -159,12 +159,17 @@
         paper.clear();  // working.
         drawBoard();
     });
+
+    /* function evaluateBoard() tests the current state of all moves to test for a win or tie. */
+    function evaluateBoard() {
+
+    }
     
     /* function play() sets up a turn based loop to control the flow of the game. */
-    // play() {
-    //     if()
-    //
-    // }
+    play() {
+        if(playerPiece === 'O')
+
+    }
 
     /* run initialize at start of program */
     init();
