@@ -56,16 +56,16 @@
      * and corresponds to the board position to place the O. */
     function drawO(square) {
         // paper.drawnCircle(centerX, centerY, radius, wobble)
-        paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 3}); //  use +20px offset from x center.
+        paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 4}); //  use +20px offset from x center.
     }
 
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
      * and corresponds to the board position to place the X. */
     function drawX(square) {
         //  use +20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 3});
+        paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 4});
         //  use -20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 3});
+        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 4});
     }
 
     /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
@@ -108,6 +108,7 @@
         svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
         svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
         drawBoard();
+        //play();
     }
     
     /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
@@ -118,17 +119,19 @@
             playerPiece = 'X';
             xRef.style.backgroundColor='#FFA500';          //  style radio button label X.
             xRef.style.color='black';
-            xRef.style.border='solid 1px red';
-            xRef.style.borderRadius='1.0em';
-            xRef.style.padding='3px';
+            xRef.style.border='solid 2px #7B56A7';
+            xRef.style.borderRadius='0.6em';
+            xRef.style.padding='1px 0 1px 5px';
+            xRef.style.margin='0 5px 0 0';
         }
         else {
             playerPiece = 'O';
             oRef.style.backgroundColor='#FFA500';          //  style radio button label O.
             oRef.style.color='black';
-            oRef.style.border='solid 1px red';
-            oRef.style.borderRadius='1.0em';
-            oRef.style.padding='3px';
+            oRef.style.border='solid 2px #7B56A7';
+            oRef.style.borderRadius='0.6em';
+            oRef.style.padding='1px 3px 1px 2px';
+            oRef.style.margin='0 5px 0 0';
 
         }
     });
@@ -142,12 +145,26 @@
         }
     });
 
+    /*  */
+    // makeMove(square) {
+    //     if(playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
+    //         moves[square] = playerPiece;                           // record move.
+    //         playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
+    //     }
+    // }
+
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
     $(window).on('resize orientationChange', function () {
         calculateBoardDimensions();
         paper.clear();  // working.
         drawBoard();
     });
+    
+    /* function play() sets up a turn based loop to control the flow of the game. */
+    // play() {
+    //     if()
+    //
+    // }
 
     /* run initialize at start of program */
     init();

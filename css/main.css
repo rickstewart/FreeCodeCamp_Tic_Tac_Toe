@@ -110,6 +110,7 @@ a:active {
 
 #radio-span {
     margin: 0 auto;
+    font-weight: normal;
 }
 
 #radio-container {
@@ -118,7 +119,12 @@ a:active {
     height: 30px;
 }
 
-#O {
+#X, #O {
+    font-size: 1.4em;
+    font-weight: normal;
+}
+
+#or {
     font-weight: normal;
 }
 
