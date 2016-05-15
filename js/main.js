@@ -33,6 +33,8 @@
     var coordCenterSquare;                       // holds map of (x, y) of center of each board square.
     var lastClickedSquare;                       // holds the name of the last clicked game board square.
     var playerPiece;                             // holds player's choice of playing X ro O.
+    var xRef;                                    // holds a reference to radio button X label.
+    var oRef;                                    // holds a reference to radio button O label.
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
@@ -96,6 +98,8 @@
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
         playerPiece = '';
+        xRef = document.getElementById('X');
+        oRef = document.getElementById('O');
         coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
         calculateBoardDimensions();
         paper = Raphael('canvas_container');     // create new Raphael object.
@@ -112,19 +116,19 @@
         document.getElementById('radioX').disabled = true;
         if(e.currentTarget.id === 'radioX') {
             playerPiece = 'X';
-            document.getElementById('X').style.backgroundColor='#FFA500';
-            document.getElementById('X').style.color='black';
-            document.getElementById('X').style.border='solid 1px red';
-            document.getElementById('X').style.borderRadius='1.0em';
-            document.getElementById('X').style.padding='3px';
+            xRef.style.backgroundColor='#FFA500';          //  style radio button label X.
+            xRef.style.color='black';
+            xRef.style.border='solid 1px red';
+            xRef.style.borderRadius='1.0em';
+            xRef.style.padding='3px';
         }
         else {
             playerPiece = 'O';
-            document.getElementById('O').style.backgroundColor='#FFA500';
-            document.getElementById('O').style.color='black';
-            document.getElementById('O').style.border='solid 1px red';
-            document.getElementById('O').style.borderRadius='1.0em';
-            document.getElementById('O').style.padding='3px';
+            oRef.style.backgroundColor='#FFA500';          //  style radio button label O.
+            oRef.style.color='black';
+            oRef.style.border='solid 1px red';
+            oRef.style.borderRadius='1.0em';
+            oRef.style.padding='3px';
 
         }
     });
@@ -145,6 +149,6 @@
         drawBoard();
     });
 
-    /* run at start of program */
+    /* run initialize at start of program */
     init();
 })();
