@@ -6,6 +6,7 @@
 },
   "rules": {
     "indent": [2, 4],
-    "brace-style": ["error", "stroustrup"]
+    "brace-style": ["error", "stroustrup"],
+    "no-unused-vars": [1, {"vars": "local", "args": "none"}] // default: [2, {"vars": "all", "args": "after-used"}]
   }
 }
