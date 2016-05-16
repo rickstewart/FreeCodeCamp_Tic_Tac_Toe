@@ -77,6 +77,7 @@
                 playerPiece === 'X' ? drawO(square) : drawX(square);   // update game board.
             }
             playersTurn = !playersTurn;                                   // flip player / AI state.
+            movesCounter++;
             play();
         }
     }
@@ -138,6 +139,7 @@
             xRef.style.borderRadius = '0.6em';
             xRef.style.padding = '1px 0 1px 5px';
             xRef.style.margin = '0 5px 0 0';
+            playersTurn = true;
             play('X');
         }
         else {
@@ -155,7 +157,9 @@
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for Listener on dynamically created content.
         lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-        makeMove(lastClickedSquare, 'player');
+        if(moves[lastClickedSquare] === 'U'){
+            makeMove(lastClickedSquare, 'player');
+        }
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
@@ -171,8 +175,9 @@
 
     /* function play() sets up a turn based loop to control the flow of the game. */
     function play() {
+        var randomNumber;
         if (playerPiece === 'O' && movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
-            var randomNumber = Math.floor((Math.random() * 8) + 1);
+            randomNumber = Math.floor((Math.random() * 8) + 1);
             while (moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
@@ -188,6 +193,11 @@
             makeMove(randomNumber, 'AI');
         }
     }
+
+    /*  */
+    // checkForWinOrTie() {
+    //
+    // }
 
     /* run initialize at start of program */
     init();

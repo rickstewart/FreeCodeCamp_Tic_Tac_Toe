@@ -32,12 +32,12 @@
   "eqeqeq": true,         // Require triple equals i.e. `===`.
   "forin": true,          // Tolerate `for in` loops without `hasOwnPrototype`.
   "immed": true,          // Require immediate invocations to be wrapped in parens e.g. `( function(){}() );`
-  "latedef": true,        // Prohibit variable use before definition.
+  "latedef": false,       // Prohibit variable use before definition.  !!!! was true
   "newcap": true,         // Require capitalization of all constructor functions e.g. `new F()`.
   "noarg": true,          // Prohibit use of `arguments.caller` and `arguments.callee`.
   "noempty": true,        // Prohibit use of empty blocks.
   "nonew": true,          // Prohibit use of constructors for side-effects.
-  "plusplus": true,       // Prohibit use of `++` & `--`.
+  "plusplus": false,       // Prohibit use of `++` & `--`.   !!!!! was true
   "regexp": true,         // Prohibit `.` and `[^...]` in regular expressions.
   "undef": true,          // Require all non-global variables be declared before they are used.
   "trailing": true,       // Prohibit trailing whitespaces.
@@ -56,7 +56,7 @@
   "boss": false,          // Tolerate assignments inside if, for & while. Usually conditions & loops are for comparison, not assignments.
   "debug": false,         // Allow debugger statements e.g. browser breakpoints.
   "eqnull": false,        // Tolerate use of `== null`.
-  "es5": false,           // Allow EcmaScript 5 syntax.
+  "es5": true,           // Allow EcmaScript 5 syntax.  !!!!!! was false
   "esnext": false,        // Allow ES.next specific features such as `const` and `let`.
   "eval": false,          // Tolerate use of `eval`.
   "expr": false,          // Tolerate `ExpressionStatement` as Programs.
