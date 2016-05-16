@@ -31,6 +31,7 @@
     var playerPiece;                             // holds player's choice of playing X ro O.
     var xRef;                                    // holds a reference to radio button X label.
     var oRef;                                    // holds a reference to radio button O label.
+    var playersTurn;                             // holds binary value, true if players turn, false if AI's turn.
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
@@ -51,6 +52,7 @@
     /* function drawO() draws a stylized O on the board. The parameter 'square' is an integer value from 0 - 8
      * and corresponds to the board position to place the O. */
     function drawO(square) {
+        moves[square] = 'O';                                            // record move.
         // paper.drawnCircle(centerX, centerY, radius, wobble)
         paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 4}); //  use +20px offset from x center.
     }
@@ -58,6 +60,7 @@
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
      * and corresponds to the board position to place the X. */
     function drawX(square) {
+        moves[square] = 'X';                                             // record move.
         //  use +20px offset from x center.
         paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 4});
         //  use -20px offset from x center.
@@ -65,14 +68,21 @@
     }
 
     /*  */
-    function makeMove(square) {
-        if (playerPiece !== '') {                                   // test to make sure player picked a marker, else board disabled.
-            moves[square] = playerPiece;                           // record move.
-            playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
+    function makeMove(square, source) {
+        if (playerPiece !== '') {                                  // test to make sure player picked a marker, else board disabled.
+            if (source === 'player' && playersTurn) {
+                playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
+            }                                  // test to make sure player picked a marker, else board disabled.
+            else if (source === 'AI' && !playersTurn) {
+                playerPiece === 'X' ? drawO(square) : drawX(square);   // update game board.
+            }
+            playersTurn = !playersTurn;                                   // flip player / AI state.
+            play();
         }
     }
 
     /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
+    // TODO test make sure user not clicking already picked square
     function addClickdetectPad() {
         var temp;
         var temp2;
@@ -103,6 +113,7 @@
         moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
         playerPiece = '';
         movesCounter = 0;
+        playersTurn = false;
         xRef = document.getElementById('X');
         oRef = document.getElementById('O');
         coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
@@ -119,7 +130,6 @@
     $(':radio').click(function(e) {
         document.getElementById('radioO').disabled = true;
         document.getElementById('radioX').disabled = true;
-        movesCounter++;
         if (e.currentTarget.id === 'radioX') {
             playerPiece = 'X';
             xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
@@ -128,6 +138,7 @@
             xRef.style.borderRadius = '0.6em';
             xRef.style.padding = '1px 0 1px 5px';
             xRef.style.margin = '0 5px 0 0';
+            play('X');
         }
         else {
             playerPiece = 'O';
@@ -137,14 +148,14 @@
             oRef.style.borderRadius = '0.6em';
             oRef.style.padding = '1px 3px 1px 2px';
             oRef.style.margin = '0 5px 0 0';
+            play('O');
         }
-        play();
     });
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for Listener on dynamically created content.
         lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-        makeMove(lastClickedSquare);
+        makeMove(lastClickedSquare, 'player');
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
@@ -155,14 +166,26 @@
     });
 
     /* function evaluateBoard() tests the current state of all moves to test for a win or tie. */
-    function evaluateBoard() {
-        ;
-    }
-    
+    // function evaluateBoard() {
+    // }
+
     /* function play() sets up a turn based loop to control the flow of the game. */
     function play() {
         if (playerPiece === 'O' && movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
-            ;
+            var randomNumber = Math.floor((Math.random() * 8) + 1);
+            while (moves[randomNumber] !== 'U') {
+                randomNumber = Math.floor((Math.random() * 8) + 1);
+            }
+            playersTurn = false;
+            makeMove(randomNumber, 'AI');
+        }
+        else if  (playerPiece === 'X' && movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+            randomNumber = Math.floor((Math.random() * 8) + 1);
+            while (moves[randomNumber] === 'U') {
+                randomNumber = Math.floor((Math.random() * 8) + 1);
+            }
+            playersTurn = false;
+            makeMove(randomNumber, 'AI');
         }
     }
 
