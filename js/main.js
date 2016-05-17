@@ -56,7 +56,6 @@
         moves[square] = 'O';                                            // record move.
         // paper.drawnCircle(centerX, centerY, radius, wobble)
         paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 4}); //  use +20px offset from x center.
-        checkForWinOrTie('O');
     }
 
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
@@ -67,21 +66,23 @@
         paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 4});
         //  use -20px offset from x center.
         paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 4});
-        checkForWinOrTie('X');
     }
 
     /*  */
     function makeMove(square, source) {
         if (playerPiece !== '') {                                  // test to make sure player picked a marker, else board disabled.
             if (source === 'player' && playersTurn) {
+                playersTurn = !playersTurn;                                   // flip player / AI state.
+                movesCounter++;
                 playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
             }                                  // test to make sure player picked a marker, else board disabled.
             else if (source === 'AI' && !playersTurn) {
+                playersTurn = !playersTurn;            // flip player / AI state.
+                setTimeout(function() {
+                    movesCounter++;
+                }, 2000);
                 playerPiece === 'X' ? drawO(square) : drawX(square);   // update game board.
             }
-            playersTurn = !playersTurn;                                   // flip player / AI state.
-            movesCounter++;
-            play();
         }
     }
 
@@ -115,7 +116,7 @@
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
-        allWinningCombos = [[0,1,3], [1,4,7], [2,5,8], [0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6]];
+        allWinningCombos = [[0,3,6], [1,4,7], [2,5,8], [0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6]];
         playerPiece = '';
         movesCounter = 0;
         playersTurn = false;
@@ -129,6 +130,7 @@
         svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
         svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
         drawBoard();
+        play();
     }
 
     /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
@@ -173,10 +175,6 @@
         drawBoard();
     });
 
-    /* function evaluateBoard() tests the current state of all moves to test for a win or tie. */
-    // function evaluateBoard() {
-    // }
-
     /* function play() sets up a turn based loop to control the flow of the game. */
     function play() {
         var randomNumber;
@@ -200,24 +198,29 @@
 
     /*  */
     function checkForWinOrTie(mark) {       // mark - X or O.
-        var occurrences = '';
+        var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
+        var tie = true;
         if(movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
             for(var i = 0; i < 9; i++) {
                 if(moves[i] === mark) {
-                    occurrences = occurrences + i;
+                    checkTheseMoves = checkTheseMoves + i;
                 }
             }
-            allWinningCombos.forEach(function(element, index, occurrences) {
-                for(var i = 0; i < element.length; i++){
-                    if(occurrences.indexOf(element[i]) === -1) {
-                        break;
+            allWinningCombos.forEach(function(element) {             // check each possible winning combination.
+                for(var j = 0; j < element.length; j++){
+                    if(checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
+                        break;                                       // if no match break and go on to test next winning combination.
                     }
                     won = true;
                 }
-                alert(mark + ' won!');
+                if(won) {                // if winning combination found, won is true.
+                    alert(mark + ' won!');
+                    won = false;
+                    tie = false;
+                }
             });
-            if(movesCounter === 9 && !won) {
+            if(movesCounter === 9 && tie) {
                 alert('Its a Tie!');
             }
         }
