@@ -56,6 +56,7 @@
         moves[square] = 'O';                                            // record move.
         // paper.drawnCircle(centerX, centerY, radius, wobble)
         paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 4}); //  use +20px offset from x center.
+        checkForWinOrTie('O');
     }
 
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
@@ -66,22 +67,26 @@
         paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 4});
         //  use -20px offset from x center.
         paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 4});
+        checkForWinOrTie('X');
     }
 
     /*  */
-    function makeMove(square, source) {
+    function makeMove(tilePicked, whoseTurn) {
         if (playerPiece !== '') {                                  // test to make sure player picked a marker, else board disabled.
-            if (source === 'player' && playersTurn) {
+            if (whoseTurn === 'player' && playersTurn) {
                 playersTurn = !playersTurn;                                   // flip player / AI state.
                 movesCounter++;
-                playerPiece === 'X' ? drawX(square) : drawO(square);   // update game board.
-            }                                  // test to make sure player picked a marker, else board disabled.
-            else if (source === 'AI' && !playersTurn) {
+                playerPiece === 'X' ? drawX(tilePicked) : drawO(tilePicked);   // update game board.
+                checkForWinOrTie(playerPiece);
+            }
+            else if (whoseTurn === 'AI' && !playersTurn) {
                 playersTurn = !playersTurn;            // flip player / AI state.
-                setTimeout(function() {
-                    movesCounter++;
-                }, 2000);
-                playerPiece === 'X' ? drawO(square) : drawX(square);   // update game board.
+                movesCounter++;
+                // setTimeout(function() {
+                //     playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
+                // }, 600);
+                playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
+                checkForWinOrTie(playerPiece);
             }
         }
     }
@@ -106,7 +111,7 @@
         paper.drawnLine(132, 20, 132, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
         paper.drawnLine(262, 20, 262, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
         addClickdetectPad();
-        for (var i = 0; i < moves.length; i++) {          // iterate over array of moves on put them on the game board.
+        for (var i = 0; i < moves.length; i++) {          // iterate over array of moves on put them on the game board. ( for resize )
             if ((moves[i] !== 'U')) {
                 moves[i] === 'X' ? drawX(i) : drawO(i);
             }
@@ -130,43 +135,48 @@
         svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
         svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
         drawBoard();
-        play();
+        listenForUserChoice_XorO();
     }
 
     /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
-    $(':radio').click(function(e) {
-        document.getElementById('radioO').disabled = true;
-        document.getElementById('radioX').disabled = true;
-        if (e.currentTarget.id === 'radioX') {
-            playerPiece = 'X';
-            xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
-            xRef.style.color = 'black';
-            xRef.style.border = 'solid 2px #7B56A7';
-            xRef.style.borderRadius = '0.6em';
-            xRef.style.padding = '1px 0 1px 5px';
-            xRef.style.margin = '0 5px 0 0';
-            playersTurn = true;
-            play();
-        }
-        else {
-            playerPiece = 'O';
-            oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
-            oRef.style.color = 'black';
-            oRef.style.border = 'solid 2px #7B56A7';
-            oRef.style.borderRadius = '0.6em';
-            oRef.style.padding = '1px 3px 1px 2px';
-            oRef.style.margin = '0 5px 0 0';
-            play();
-        }
-    });
+    function listenForUserChoice_XorO() {
+        $(':radio').click(function(e) {
+            document.getElementById('radioO').disabled = true;
+            document.getElementById('radioX').disabled = true;
+            if (e.currentTarget.id === 'radioX') {
+                playerPiece = 'X';
+                xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
+                xRef.style.color = 'black';
+                xRef.style.border = 'solid 2px #7B56A7';
+                xRef.style.borderRadius = '0.6em';
+                xRef.style.padding = '1px 0 1px 5px';
+                xRef.style.margin = '0 5px 0 0';
+                playersTurn = true;
+                checkForWinOrTie('X');
+            }
+            else {
+                playerPiece = 'O';
+                oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
+                oRef.style.color = 'black';
+                oRef.style.border = 'solid 2px #7B56A7';
+                oRef.style.borderRadius = '0.6em';
+                oRef.style.padding = '1px 3px 1px 2px';
+                oRef.style.margin = '0 5px 0 0';
+                checkForWinOrTie('O');
+            }
+        });
+    }
+
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
-    $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for Listener on dynamically created content.
-        lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-        if(moves[lastClickedSquare] === 'U'){
-            makeMove(lastClickedSquare, 'player');
-        }
-    });
+    function listenForUserMove() {
+        $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for Listener on dynamically created content.
+            lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
+            if(moves[lastClickedSquare] === 'U'){
+                makeMove(lastClickedSquare, 'player');
+            }
+        });
+    }
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
     $(window).on('resize orientationChange', function() {
@@ -194,6 +204,7 @@
             playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
+        listenForUserMove();
     }
 
     /*  */
@@ -212,7 +223,9 @@
                     if(checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
                         break;                                       // if no match break and go on to test next winning combination.
                     }
-                    won = true;
+                    if(j === 2) {
+                        won = true;
+                    }
                 }
                 if(won) {                // if winning combination found, won is true.
                     alert(mark + ' won!');
@@ -224,6 +237,7 @@
                 alert('Its a Tie!');
             }
         }
+        play();
     }
 
     /* run initialize at start of program */
