@@ -32,6 +32,7 @@
     var xRef;                                    // holds a reference to radio button X label.
     var oRef;                                    // holds a reference to radio button O label.
     var playersTurn;                             // holds binary value, true if players turn, false if AI's turn.
+    var allWinningCombos;                        // holds all possible winning combinations.
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
@@ -55,6 +56,7 @@
         moves[square] = 'O';                                            // record move.
         // paper.drawnCircle(centerX, centerY, radius, wobble)
         paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 4}); //  use +20px offset from x center.
+        checkForWinOrTie('O');
     }
 
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
@@ -65,6 +67,7 @@
         paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 4});
         //  use -20px offset from x center.
         paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 4});
+        checkForWinOrTie('X');
     }
 
     /*  */
@@ -112,6 +115,7 @@
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
+        allWinningCombos = [[0,1,3], [1,4,7], [2,5,8], [0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6]];
         playerPiece = '';
         movesCounter = 0;
         playersTurn = false;
@@ -140,7 +144,7 @@
             xRef.style.padding = '1px 0 1px 5px';
             xRef.style.margin = '0 5px 0 0';
             playersTurn = true;
-            play('X');
+            play();
         }
         else {
             playerPiece = 'O';
@@ -150,7 +154,7 @@
             oRef.style.borderRadius = '0.6em';
             oRef.style.padding = '1px 3px 1px 2px';
             oRef.style.margin = '0 5px 0 0';
-            play('O');
+            play();
         }
     });
 
@@ -186,7 +190,7 @@
         }
         else if  (playerPiece === 'X' && movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
-            while (moves[randomNumber] === 'U') {
+            while (moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
             playersTurn = false;
@@ -195,9 +199,29 @@
     }
 
     /*  */
-    // checkForWinOrTie() {
-    //
-    // }
+    function checkForWinOrTie(mark) {       // mark - X or O.
+        var occurrences = '';
+        var won = false;
+        if(movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
+            for(var i = 0; i < 9; i++) {
+                if(moves[i] === mark) {
+                    occurrences = occurrences + i;
+                }
+            }
+            allWinningCombos.forEach(function(element, index, occurrences) {
+                for(var i = 0; i < element.length; i++){
+                    if(occurrences.indexOf(element[i]) === -1) {
+                        break;
+                    }
+                    won = true;
+                }
+                alert(mark + ' won!');
+            });
+            if(movesCounter === 9 && !won) {
+                alert('Its a Tie!');
+            }
+        }
+    }
 
     /* run initialize at start of program */
     init();
