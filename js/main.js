@@ -135,7 +135,7 @@
     }
 
     /* function play() sets up a turn based loop to control the flow of the game. */
-    function play(argsObject) {
+    function play() {
         var randomNumber;
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
@@ -143,7 +143,7 @@
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
             argsObject.playersTurn = false;
-            makeMove(argsObject, randomNumber, 'AI');
+            makeMove(randomNumber, 'AI');
         }
         else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
@@ -151,9 +151,8 @@
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
             argsObject.playersTurn = false;
-            makeMove(argsObject, randomNumber, 'AI');
+            makeMove(randomNumber, 'AI');
         }
-        listenForUserMove();
     }
 
     /*  */
@@ -189,7 +188,7 @@
         play(argsObject);
     }
 
-    /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
+    /* Listener added to detect player's choice of playing as X or O.  Once fired the group is disabled from further changes. */
     function listenForUserChoice_XorO() {
         $(':radio').click(function (e) {
             document.getElementById('radioO').disabled = true;
@@ -203,7 +202,7 @@
                 argsObject.xRef.style.padding = '1px 0 1px 5px';
                 argsObject.xRef.style.margin = '0 5px 0 0';
                 argsObject.playersTurn = true;
-                checkForWinOrTie();
+                play();
             }
             else {
                 argsObject.playerPiece = 'O';
@@ -213,21 +212,18 @@
                 argsObject.oRef.style.borderRadius = '0.6em';
                 argsObject.oRef.style.padding = '1px 3px 1px 2px';
                 argsObject.oRef.style.margin = '0 5px 0 0';
-                checkForWinOrTie();
+                play();
             }
         });
     }
-
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
-    function listenForUserMove() {
-        $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
-            argsObject.lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-            if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
-                makeMove(argsObject.lastClickedSquare, 'player');
-            }
-        });
-    }
+    $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
+        argsObject.lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
+        if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
+            makeMove(argsObject.lastClickedSquare, 'player');
+        }
+    });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
     $(window).on('resize orientationChange', function () {
@@ -236,6 +232,6 @@
         drawBoard();
     });
 
-    /* run initialize at start of program */
+    /* program entry point */
     init();
 })();
