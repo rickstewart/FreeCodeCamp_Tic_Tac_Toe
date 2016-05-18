@@ -25,6 +25,7 @@
         argsObject.playerPiece = '';                             // holds player's choice of playing X ro O.
         argsObject.movesCounter = 0;                             // holds a running count of moves made.
         argsObject.playersTurn = false;                          // holds true if players turn, false if AI's turn.
+        argsObject.wonOrTied = false;                            // holds state of game play - false still playing - true game won or tied.
         argsObject.xRef = document.getElementById('X');          // holds a reference to radio button X label.
         argsObject.oRef = document.getElementById('O');          // holds a reference to radio button O label.
         argsObject.coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
@@ -35,7 +36,6 @@
         argsObject.svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
         argsObject.svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
         drawBoard();
-        listenForUserChoice_XorO();
     }
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
@@ -96,9 +96,6 @@
             else if (whoseTurn === 'AI' && !argsObject.playersTurn) {
                 argsObject.playersTurn = !argsObject.playersTurn;            // flip player / AI state.
                 argsObject.movesCounter++;
-                // setTimeout(function() {
-                //     playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
-                // }, 600);
                 argsObject.playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
                 checkForWinOrTie();
             }
@@ -166,56 +163,54 @@
                     checkTheseMoves = checkTheseMoves + i;
                 }
             }
-            argsObject.allWinningCombos.forEach(function (element) {             // check each possible winning combination.
-                for (var j = 0; j < element.length; j++) {
-                    if (checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
-                        break;                                       // if no match break and go on to test next winning combination.
+            if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
+                argsObject.allWinningCombos.forEach(function (element) {             // check each possible winning combination.
+                    for (var j = 0; j < element.length; j++) {
+                        if (checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
+                            break;                                       // if no match break and go on to test next winning combination.
+                        }
+                        if (j === 2) {
+                            won = true;
+                        }
                     }
-                    if (j === 2) {
-                        won = true;
+                    if (won) {                // if winning combination found, won is true.
+                        alert(argsObject.playerPiece + ' won!');
                     }
+                });
+                if (argsObject.movesCounter === 9 && tie) {
+                    alert('Its a Tie!');
+                    argsObject.wonOrTied = true;
                 }
-                if (won) {                // if winning combination found, won is true.
-                    alert(argsObject.playerPiece + ' won!');
-                    won = false;
-                    tie = false;
-                }
-            });
-            if (argsObject.movesCounter === 9 && tie) {
-                alert('Its a Tie!');
             }
         }
-        play(argsObject);
     }
 
     /* Listener added to detect player's choice of playing as X or O.  Once fired the group is disabled from further changes. */
-    function listenForUserChoice_XorO() {
-        $(':radio').click(function (e) {
-            document.getElementById('radioO').disabled = true;
-            document.getElementById('radioX').disabled = true;
-            if (e.currentTarget.id === 'radioX') {
-                argsObject.playerPiece = 'X';
-                argsObject.xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
-                argsObject.xRef.style.color = 'black';
-                argsObject.xRef.style.border = 'solid 2px #7B56A7';
-                argsObject.xRef.style.borderRadius = '0.6em';
-                argsObject.xRef.style.padding = '1px 0 1px 5px';
-                argsObject.xRef.style.margin = '0 5px 0 0';
-                argsObject.playersTurn = true;
-                play();
-            }
-            else {
-                argsObject.playerPiece = 'O';
-                argsObject.oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
-                argsObject.oRef.style.color = 'black';
-                argsObject.oRef.style.border = 'solid 2px #7B56A7';
-                argsObject.oRef.style.borderRadius = '0.6em';
-                argsObject.oRef.style.padding = '1px 3px 1px 2px';
-                argsObject.oRef.style.margin = '0 5px 0 0';
-                play();
-            }
-        });
-    }
+    $(':radio').click(function (e) {
+        document.getElementById('radioO').disabled = true;
+        document.getElementById('radioX').disabled = true;
+        if (e.currentTarget.id === 'radioX') {
+            argsObject.playerPiece = 'X';
+            argsObject.xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
+            argsObject.xRef.style.color = 'black';
+            argsObject.xRef.style.border = 'solid 2px #7B56A7';
+            argsObject.xRef.style.borderRadius = '0.6em';
+            argsObject.xRef.style.padding = '1px 0 1px 5px';
+            argsObject.xRef.style.margin = '0 5px 0 0';
+            argsObject.playersTurn = true;
+            play();
+        }
+        else {
+            argsObject.playerPiece = 'O';
+            argsObject.oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
+            argsObject.oRef.style.color = 'black';
+            argsObject.oRef.style.border = 'solid 2px #7B56A7';
+            argsObject.oRef.style.borderRadius = '0.6em';
+            argsObject.oRef.style.padding = '1px 3px 1px 2px';
+            argsObject.oRef.style.margin = '0 5px 0 0';
+            play();
+        }
+    });
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
@@ -223,6 +218,7 @@
         if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
             makeMove(argsObject.lastClickedSquare, 'player');
         }
+        play();
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
