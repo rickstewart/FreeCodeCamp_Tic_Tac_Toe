@@ -118,6 +118,7 @@
   "predef": [
   ],
   "indent": 2,             // Specify indentation spacing
+  "expr": true,
   "globals": {            // This declares to JSHint that $ is a global variable,
     "$": false,
     "jQuery": false,

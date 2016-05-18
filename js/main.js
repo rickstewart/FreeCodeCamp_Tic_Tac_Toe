@@ -16,86 +16,54 @@
 /* function tictactoe() is the main container to scope the shared variables and methods. */
 (function tictactoe() {
     'use strict';
-    var viewportHeight;                          // holds the height dimension of the viewport.
-    var viewportWidth;                           // holds the width dimension of the viewport.
-    var headerHeight;                            // holds the height dimension of the page header.
-    var gameboardLengthOfSide;                   // holds the length of a side of the playing board.
-    var zeroCoordinateX;                         // holds the X coordinate of the upper left corner of the board.
-    var zeroCoordinateY;                         // holds the Y coordinate of the upper left corner of the board.
-    var paper;                                   // holds a reference to the Raphael object.
-    var svg;                                     // holds a reference to the svg object.
-    var moves;                                   // holds player and AI game moves.
-    var coordCenterSquare;                       // holds map of (x, y) of center of each board square.
-    var lastClickedSquare;                       // holds the name of the last clicked game board square.
-    var movesCounter;                            // holds a running count of moves made.
-    var playerPiece;                             // holds player's choice of playing X ro O.
-    var xRef;                                    // holds a reference to radio button X label.
-    var oRef;                                    // holds a reference to radio button O label.
-    var playersTurn;                             // holds binary value, true if players turn, false if AI's turn.
-    var allWinningCombos;                        // holds all possible winning combinations.
+    var argsObject = {};                 // holds collection of program variables.
+
+    /* function init() runs at the beginning of the program to initialize variables and settings. */
+    function init() {
+        argsObject.moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
+        argsObject.allWinningCombos = [[0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6]];  // holds winning combinations.
+        argsObject.playerPiece = '';                             // holds player's choice of playing X ro O.
+        argsObject.movesCounter = 0;                             // holds a running count of moves made.
+        argsObject.playersTurn = false;                          // holds true if players turn, false if AI's turn.
+        argsObject.xRef = document.getElementById('X');          // holds a reference to radio button X label.
+        argsObject.oRef = document.getElementById('O');          // holds a reference to radio button O label.
+        argsObject.coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
+        calculateBoardDimensions();
+        argsObject.paper = Raphael('canvas_container');     // create new Raphael object.
+        argsObject.paper.setViewBox(0, 0, 400, 400, true);  // anchor viewbox to upper left corner of canvas_container, size 400 X 400 px.
+        argsObject.svg = document.querySelector('svg');
+        argsObject.svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
+        argsObject.svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
+        drawBoard();
+        listenForUserChoice_XorO();
+    }
 
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
     function calculateBoardDimensions() {
-        viewportHeight = window.innerHeight;     // get current height of viewport.
-        viewportWidth = window.innerWidth;       // get current width of viewport.
-        headerHeight = jQuery('header').outerHeight();   // get number of pixels header taking up, Y-axis.
-        if (viewportWidth > viewportHeight) {    // if viewport aspect ratio is landscape shaped.
-            gameboardLengthOfSide = viewportHeight * 0.5;  // calculate length of a side of board container. ( container is square )
+        argsObject.viewportHeight = window.innerHeight;     // get current height of viewport.
+        argsObject.viewportWidth = window.innerWidth;       // get current width of viewport.
+        argsObject.headerHeight = jQuery('header').outerHeight();   // get number of pixels header taking up, Y-axis.
+        if (argsObject.viewportWidth > argsObject.viewportHeight) {    // if viewport aspect ratio is landscape shaped.
+            argsObject.gameboardLengthOfSide = argsObject.viewportHeight * 0.5;  // calculate length of a side of board container. ( container is square )
         }
         else {                                   // else viewport aspect ratio is portrait shaped.
-            gameboardLengthOfSide = viewportWidth * 0.5;  // calculate length of a side of board container. ( container is square )
+            argsObject.gameboardLengthOfSide = argsObject.viewportWidth * 0.5;  // calculate length of a side of board container. ( container is square )
         }
-        zeroCoordinateX = (viewportWidth / 2) - (gameboardLengthOfSide / 2);  // find upper left corner of container - X coordinate.
-        zeroCoordinateY = headerHeight + 60; // find upper left corner of container - Y coordinate. ( 60 pixels down from header )
+        argsObject.zeroCoordinateX = (argsObject.viewportWidth / 2) - (argsObject.gameboardLengthOfSide / 2);  // find upper left corner of container - X coordinate.
+        argsObject.zeroCoordinateY = argsObject.headerHeight + 60; // find upper left corner of container - Y coordinate. ( 60 pixels down from header )
     }
 
-    /* function drawO() draws a stylized O on the board. The parameter 'square' is an integer value from 0 - 8
-     * and corresponds to the board position to place the O. */
-    function drawO(square) {
-        moves[square] = 'O';                                            // record move.
-        // paper.drawnCircle(centerX, centerY, radius, wobble)
-        paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({
-            'stroke': 'blue',
-            'stroke-width': 4
-        }); //  use +20px offset from x center.
-        checkForWinOrTie('O');
-    }
-
-    /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
-     * and corresponds to the board position to place the X. */
-    function drawX(square) {
-        moves[square] = 'X';                                             // record move.
-        //  use +20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({
-            'stroke': 'blue',
-            'stroke-width': 4
-        });
-        //  use -20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({
-            'stroke': 'blue',
-            'stroke-width': 4
-        });
-        checkForWinOrTie('X');
-    }
-
-    /*  */
-    function makeMove(tilePicked, whoseTurn) {
-        if (playerPiece !== '') {                                  // test to make sure player picked a marker, else board disabled.
-            if (whoseTurn === 'player' && playersTurn) {
-                playersTurn = !playersTurn;                                   // flip player / AI state.
-                movesCounter++;
-                playerPiece === 'X' ? drawX(tilePicked) : drawO(tilePicked);   // update game board.
-                checkForWinOrTie(playerPiece);
-            }
-            else if (whoseTurn === 'AI' && !playersTurn) {
-                playersTurn = !playersTurn;            // flip player / AI state.
-                movesCounter++;
-                // setTimeout(function() {
-                //     playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
-                // }, 600);
-                playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
-                checkForWinOrTie(playerPiece);
+    /* function drawBoard() paints the graphics unto the browser window. */
+    function drawBoard() {
+        argsObject.paper.drawnLine(20, 132, 380, 132, 5).attr({'stroke': 'red', 'stroke-width': 2});  // draw 4 lines of game board.
+        argsObject.paper.drawnLine(20, 262, 380, 264, 5).attr({'stroke': 'red', 'stroke-width': 2});
+        argsObject.paper.drawnLine(132, 20, 132, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
+        argsObject.paper.drawnLine(262, 20, 262, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
+        addClickdetectPad();
+        for (var i = 0; i < argsObject.moves.length; i++) {          // iterate over array of moves on put them on the game board. ( for resize )
+            if ((argsObject.moves[i] !== 'U')) {
+                argsObject.moves[i] === 'X' ? drawX(i) : drawO(i);
             }
         }
     }
@@ -105,9 +73,9 @@
     function addClickdetectPad() {
         var temp;
         var temp2;
-        for (var i = 0; i < coordCenterSquare.length; i++) {
+        for (var i = 0; i < argsObject.coordCenterSquare.length; i++) {
             temp = i;
-            temp2 = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({
+            temp2 = argsObject.paper.rect(argsObject.coordCenterSquare[i][0] - 50, argsObject.coordCenterSquare[i][1] - 50, 120, 120).attr({
                 'stroke': '#ffa500',
                 'fill': '#ffa500'
             });
@@ -116,121 +84,90 @@
         }
     }
 
-    /* function drawBoard() paints the graphics unto the browser window. */
-    function drawBoard() {
-        paper.drawnLine(20, 132, 380, 132, 5).attr({'stroke': 'red', 'stroke-width': 2});  // draw 4 lines of game board.
-        paper.drawnLine(20, 262, 380, 264, 5).attr({'stroke': 'red', 'stroke-width': 2});
-        paper.drawnLine(132, 20, 132, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
-        paper.drawnLine(262, 20, 262, 380, 5).attr({'stroke': 'red', 'stroke-width': 2});
-        addClickdetectPad();
-        for (var i = 0; i < moves.length; i++) {          // iterate over array of moves on put them on the game board. ( for resize )
-            if ((moves[i] !== 'U')) {
-                moves[i] === 'X' ? drawX(i) : drawO(i);
+    /*  */
+    function makeMove(tilePicked, whoseTurn) {
+        if (argsObject.playerPiece !== '') {                                  // test to make sure player picked a marker, else board disabled.
+            if (whoseTurn === 'player' && argsObject.playersTurn) {
+                argsObject.playersTurn = !argsObject.playersTurn;                                   // flip player / AI state.
+                argsObject.movesCounter++;
+                argsObject.playerPiece === 'X' ? drawX(tilePicked) : drawO(tilePicked);   // update game board.
+                checkForWinOrTie();
+            }
+            else if (whoseTurn === 'AI' && !argsObject.playersTurn) {
+                argsObject.playersTurn = !argsObject.playersTurn;            // flip player / AI state.
+                argsObject.movesCounter++;
+                // setTimeout(function() {
+                //     playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
+                // }, 600);
+                argsObject.playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // update game board.
+                checkForWinOrTie();
             }
         }
     }
 
-    /* function init() runs at the beginning of the program to initialize variables and settings. */
-    function init() {
-        moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
-        allWinningCombos = [[0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6]];
-        playerPiece = '';
-        movesCounter = 0;
-        playersTurn = false;
-        xRef = document.getElementById('X');
-        oRef = document.getElementById('O');
-        coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
-        calculateBoardDimensions();
-        paper = Raphael('canvas_container');     // create new Raphael object.
-        paper.setViewBox(0, 0, 400, 400, true);  // anchor viewbox to upper left corner of canvas_container, size 400 X 400 px.
-        svg = document.querySelector('svg');
-        svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
-        svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
-        drawBoard();
-        listenForUserChoice_XorO();
-    }
-
-    /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
-    function listenForUserChoice_XorO() {
-        $(':radio').click(function (e) {
-            document.getElementById('radioO').disabled = true;
-            document.getElementById('radioX').disabled = true;
-            if (e.currentTarget.id === 'radioX') {
-                playerPiece = 'X';
-                xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
-                xRef.style.color = 'black';
-                xRef.style.border = 'solid 2px #7B56A7';
-                xRef.style.borderRadius = '0.6em';
-                xRef.style.padding = '1px 0 1px 5px';
-                xRef.style.margin = '0 5px 0 0';
-                playersTurn = true;
-                checkForWinOrTie('X');
-            }
-            else {
-                playerPiece = 'O';
-                oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
-                oRef.style.color = 'black';
-                oRef.style.border = 'solid 2px #7B56A7';
-                oRef.style.borderRadius = '0.6em';
-                oRef.style.padding = '1px 3px 1px 2px';
-                oRef.style.margin = '0 5px 0 0';
-                checkForWinOrTie('O');
-            }
+    /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
+     * and corresponds to the board position to place the X. */
+    function drawX(square) {
+        argsObject.moves[square] = 'X';                                             // record move.
+        //  use +20px offset from x center.
+        argsObject.paper.drawnCircularArc(argsObject.coordCenterSquare[square][0] + 25, argsObject.coordCenterSquare[square][1] + 17, 20, 100, 260).attr({
+            'stroke': 'blue',
+            'stroke-width': 4
         });
-    }
-
-
-    /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
-    function listenForUserMove() {
-        $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
-            lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-            if (moves[lastClickedSquare] === 'U') {
-                makeMove(lastClickedSquare, 'player');
-            }
+        //  use -20px offset from x center.
+        argsObject.paper.drawnCircularArc(argsObject.coordCenterSquare[square][0] - 14, argsObject.coordCenterSquare[square][1] + 14, 20, 270, 80).attr({
+            'stroke': 'blue',
+            'stroke-width': 4
         });
+        checkForWinOrTie();
     }
 
-    /* Listener added to detect changes to the viewport size and adjust board accordingly. */
-    $(window).on('resize orientationChange', function () {
-        calculateBoardDimensions();
-        paper.clear();  // working.
-        drawBoard();
-    });
+    /* function drawO() draws a stylized O on the board. The parameter 'square' is an integer value from 0 - 8
+     * and corresponds to the board position to place the O. */
+    function drawO(square) {
+        argsObject.moves[square] = 'O';                                            // record move.
+        // paper.drawnCircle(centerX, centerY, radius, wobble)
+        argsObject.paper.drawnCircle(argsObject.coordCenterSquare[square][0] + 10, argsObject.coordCenterSquare[square][1] + 14, 23, 3).attr({
+            'stroke': 'blue',
+            'stroke-width': 4
+        }); //  use +20px offset from x center.
+        checkForWinOrTie();
+    }
 
     /* function play() sets up a turn based loop to control the flow of the game. */
-    function play() {
+    function play(argsObject) {
         var randomNumber;
-        if (playerPiece === 'O' && movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
+        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
-            while (moves[randomNumber] !== 'U') {
+            while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
-            playersTurn = false;
-            makeMove(randomNumber, 'AI');
+            argsObject.playersTurn = false;
+            makeMove(argsObject, randomNumber, 'AI');
         }
-        else if (playerPiece === 'X' && movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
-            while (moves[randomNumber] !== 'U') {
+            while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
-            playersTurn = false;
-            makeMove(randomNumber, 'AI');
+            argsObject.playersTurn = false;
+            makeMove(argsObject, randomNumber, 'AI');
         }
         listenForUserMove();
     }
 
     /*  */
-    function checkForWinOrTie(mark) {       // mark - X or O.
+    function checkForWinOrTie() {       // mark - X or O.
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
         var tie = true;
-        if (movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
+        if (argsObject.movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
             for (var i = 0; i < 9; i++) {
-                if (moves[i] === mark) {
+                if (argsObject.moves[i] === argsObject.playerPiece) {
                     checkTheseMoves = checkTheseMoves + i;
                 }
             }
-            allWinningCombos.forEach(function (element) {             // check each possible winning combination.
+            argsObject.allWinningCombos.forEach(function (element) {             // check each possible winning combination.
                 for (var j = 0; j < element.length; j++) {
                     if (checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
                         break;                                       // if no match break and go on to test next winning combination.
@@ -240,17 +177,64 @@
                     }
                 }
                 if (won) {                // if winning combination found, won is true.
-                    alert(mark + ' won!');
+                    alert(argsObject.playerPiece + ' won!');
                     won = false;
                     tie = false;
                 }
             });
-            if (movesCounter === 9 && tie) {
+            if (argsObject.movesCounter === 9 && tie) {
                 alert('Its a Tie!');
             }
         }
-        play();
+        play(argsObject);
     }
+
+    /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
+    function listenForUserChoice_XorO() {
+        $(':radio').click(function (e) {
+            document.getElementById('radioO').disabled = true;
+            document.getElementById('radioX').disabled = true;
+            if (e.currentTarget.id === 'radioX') {
+                argsObject.playerPiece = 'X';
+                argsObject.xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
+                argsObject.xRef.style.color = 'black';
+                argsObject.xRef.style.border = 'solid 2px #7B56A7';
+                argsObject.xRef.style.borderRadius = '0.6em';
+                argsObject.xRef.style.padding = '1px 0 1px 5px';
+                argsObject.xRef.style.margin = '0 5px 0 0';
+                argsObject.playersTurn = true;
+                checkForWinOrTie();
+            }
+            else {
+                argsObject.playerPiece = 'O';
+                argsObject.oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
+                argsObject.oRef.style.color = 'black';
+                argsObject.oRef.style.border = 'solid 2px #7B56A7';
+                argsObject.oRef.style.borderRadius = '0.6em';
+                argsObject.oRef.style.padding = '1px 3px 1px 2px';
+                argsObject.oRef.style.margin = '0 5px 0 0';
+                checkForWinOrTie();
+            }
+        });
+    }
+
+
+    /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
+    function listenForUserMove() {
+        $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
+            argsObject.lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
+            if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
+                makeMove(argsObject.lastClickedSquare, 'player');
+            }
+        });
+    }
+
+    /* Listener added to detect changes to the viewport size and adjust board accordingly. */
+    $(window).on('resize orientationChange', function () {
+        calculateBoardDimensions();
+        argsObject.paper.clear();  // working.
+        drawBoard();
+    });
 
     /* run initialize at start of program */
     init();
