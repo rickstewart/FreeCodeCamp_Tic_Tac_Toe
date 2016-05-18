@@ -55,7 +55,10 @@
     function drawO(square) {
         moves[square] = 'O';                                            // record move.
         // paper.drawnCircle(centerX, centerY, radius, wobble)
-        paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({'stroke': 'blue', 'stroke-width': 4}); //  use +20px offset from x center.
+        paper.drawnCircle(coordCenterSquare[square][0] + 10, coordCenterSquare[square][1] + 14, 23, 3).attr({
+            'stroke': 'blue',
+            'stroke-width': 4
+        }); //  use +20px offset from x center.
         checkForWinOrTie('O');
     }
 
@@ -64,9 +67,15 @@
     function drawX(square) {
         moves[square] = 'X';                                             // record move.
         //  use +20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({'stroke': 'blue', 'stroke-width': 4});
+        paper.drawnCircularArc(coordCenterSquare[square][0] + 25, coordCenterSquare[square][1] + 17, 20, 100, 260).attr({
+            'stroke': 'blue',
+            'stroke-width': 4
+        });
         //  use -20px offset from x center.
-        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({'stroke': 'blue', 'stroke-width': 4});
+        paper.drawnCircularArc(coordCenterSquare[square][0] - 14, coordCenterSquare[square][1] + 14, 20, 270, 80).attr({
+            'stroke': 'blue',
+            'stroke-width': 4
+        });
         checkForWinOrTie('X');
     }
 
@@ -98,7 +107,10 @@
         var temp2;
         for (var i = 0; i < coordCenterSquare.length; i++) {
             temp = i;
-            temp2 = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({'stroke': '#ffa500', 'fill': '#ffa500'});
+            temp2 = paper.rect(coordCenterSquare[i][0] - 50, coordCenterSquare[i][1] - 50, 120, 120).attr({
+                'stroke': '#ffa500',
+                'fill': '#ffa500'
+            });
             temp2.node.setAttribute('class', 'clickPad');
             temp2.node.setAttribute('id', temp);
         }
@@ -121,7 +133,7 @@
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
         moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];   // U is unoccupied square, one for each of 9 positions.
-        allWinningCombos = [[0,3,6], [1,4,7], [2,5,8], [0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6]];
+        allWinningCombos = [[0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6]];
         playerPiece = '';
         movesCounter = 0;
         playersTurn = false;
@@ -140,7 +152,7 @@
 
     /* Listener attached to radio button group.  When fired the group is disabled from further changes. Choice highlighted. */
     function listenForUserChoice_XorO() {
-        $(':radio').click(function(e) {
+        $(':radio').click(function (e) {
             document.getElementById('radioO').disabled = true;
             document.getElementById('radioX').disabled = true;
             if (e.currentTarget.id === 'radioX') {
@@ -170,16 +182,16 @@
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     function listenForUserMove() {
-        $('#canvas_container').on('click', '.clickPad', function(e) {  // syntax for Listener on dynamically created content.
+        $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
             lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-            if(moves[lastClickedSquare] === 'U'){
+            if (moves[lastClickedSquare] === 'U') {
                 makeMove(lastClickedSquare, 'player');
             }
         });
     }
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
-    $(window).on('resize orientationChange', function() {
+    $(window).on('resize orientationChange', function () {
         calculateBoardDimensions();
         paper.clear();  // working.
         drawBoard();
@@ -196,7 +208,7 @@
             playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
-        else if  (playerPiece === 'X' && movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+        else if (playerPiece === 'X' && movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
             while (moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
@@ -212,28 +224,28 @@
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
         var tie = true;
-        if(movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
-            for(var i = 0; i < 9; i++) {
-                if(moves[i] === mark) {
+        if (movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
+            for (var i = 0; i < 9; i++) {
+                if (moves[i] === mark) {
                     checkTheseMoves = checkTheseMoves + i;
                 }
             }
-            allWinningCombos.forEach(function(element) {             // check each possible winning combination.
-                for(var j = 0; j < element.length; j++){
-                    if(checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
+            allWinningCombos.forEach(function (element) {             // check each possible winning combination.
+                for (var j = 0; j < element.length; j++) {
+                    if (checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
                         break;                                       // if no match break and go on to test next winning combination.
                     }
-                    if(j === 2) {
+                    if (j === 2) {
                         won = true;
                     }
                 }
-                if(won) {                // if winning combination found, won is true.
+                if (won) {                // if winning combination found, won is true.
                     alert(mark + ' won!');
                     won = false;
                     tie = false;
                 }
             });
-            if(movesCounter === 9 && tie) {
+            if (movesCounter === 9 && tie) {
                 alert('Its a Tie!');
             }
         }
