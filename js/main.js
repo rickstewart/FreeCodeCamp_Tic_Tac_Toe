@@ -25,7 +25,8 @@
         argsObject.playerPiece = '';                             // holds player's choice of playing X ro O.
         argsObject.movesCounter = 0;                             // holds a running count of moves made.
         argsObject.playersTurn = false;                          // holds true if players turn, false if AI's turn.
-        argsObject.wonOrTied = false;                            // holds state of game play - false still playing - true game won or tied.
+        argsObject.ended = false;                                // holds state of game play - false still playing - true game won or tied.
+        argsObject.nowPlaying = '';                              // holds mark of current turn holder, player or AI.
         argsObject.xRef = document.getElementById('X');          // holds a reference to radio button X label.
         argsObject.oRef = document.getElementById('O');          // holds a reference to radio button O label.
         argsObject.coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
@@ -116,6 +117,7 @@
             'stroke': 'blue',
             'stroke-width': 4
         });
+        argsObject.nowPlaying = 'X';
         checkForWinOrTie();
     }
 
@@ -128,13 +130,14 @@
             'stroke': 'blue',
             'stroke-width': 4
         }); //  use +20px offset from x center.
+        argsObject.nowPlaying = 'O';
         checkForWinOrTie();
     }
 
     /* function play() sets up a turn based loop to control the flow of the game. */
     function play() {
         var randomNumber;
-        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
+        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0 && !argsObject.ended) {   // if player picked 'O' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
             while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
@@ -142,7 +145,7 @@
             argsObject.playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
-        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0 && !argsObject.ended) {   // if player picked 'X' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
             while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
@@ -156,30 +159,30 @@
     function checkForWinOrTie() {       // mark - X or O.
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
-        var tie = true;
         if (argsObject.movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
             for (var i = 0; i < 9; i++) {
-                if (argsObject.moves[i] === argsObject.playerPiece) {
+                if (argsObject.moves[i] === argsObject.nowPlaying) {
                     checkTheseMoves = checkTheseMoves + i;
                 }
             }
             if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
                 argsObject.allWinningCombos.forEach(function (element) {             // check each possible winning combination.
                     for (var j = 0; j < element.length; j++) {
-                        if (checkTheseMoves.indexOf(element[j]) === -1) { // test if no match for this move.
+                        if (checkTheseMoves.indexOf(element[j]) === -1 && !argsObject.ended) { // test if no match for this move.
                             break;                                       // if no match break and go on to test next winning combination.
                         }
                         if (j === 2) {
                             won = true;
                         }
                     }
-                    if (won) {                // if winning combination found, won is true.
-                        alert(argsObject.playerPiece + ' won!');
+                    if (won && !argsObject.ended) {                // if winning combination found, won is true.
+                        alert(argsObject.nowPlaying + ' won!');
+                        argsObject.ended = true;
                     }
                 });
-                if (argsObject.movesCounter === 9 && tie) {
+                if (argsObject.movesCounter === 9 && !argsObject.ended) {
                     alert('Its a Tie!');
-                    argsObject.wonOrTied = true;
+                    argsObject.ended = true;
                 }
             }
         }
@@ -215,7 +218,7 @@
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
         argsObject.lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-        if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
+        if (argsObject.moves[argsObject.lastClickedSquare] === 'U' && !argsObject.ended) {
             makeMove(argsObject.lastClickedSquare, 'player');
         }
         play();
