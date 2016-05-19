@@ -134,6 +134,15 @@
         checkForWinOrTie();
     }
 
+    /*  */
+    function drawWinningLine(winningPattern) {
+        var drawWinningLinePaths =  [[[66,36],[66,360]], [[195,36],[195,364]], [[320,36],[320,364]], [[36,76],[360,76]], [[36,198],[360,198]],
+            [[36,330],[360,330]], [[36,44],[360,368]], [[36,360],[360,36]]];   // vector paths for drawing the winning line.
+        var whichPath = drawWinningLinePaths[winningPattern];                       // pick the appropriate path for the winning combination.
+        var selectedPath = ('M' + whichPath[0][0] + ' ' + whichPath[0][1] + 'L' + whichPath[1][0] + ' ' + whichPath[1][1] );
+        argsObject.paper.path(selectedPath).attr({'stroke': 'green', 'stroke-width': 2});
+    }
+
     /* function play() sets up a turn based loop to control the flow of the game. */
     function play() {
         var randomNumber;
@@ -159,6 +168,7 @@
     function checkForWinOrTie() {       // mark - X or O.
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
+        var winningPattern = -1;
         if (argsObject.movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
             for (var i = 0; i < 9; i++) {
                 if (argsObject.moves[i] === argsObject.nowPlaying) {
@@ -167,6 +177,7 @@
             }
             if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
                 argsObject.allWinningCombos.forEach(function (element) {             // check each possible winning combination.
+                    winningPattern++;
                     for (var j = 0; j < element.length; j++) {
                         if (checkTheseMoves.indexOf(element[j]) === -1 && !argsObject.ended) { // test if no match for this move.
                             break;                                       // if no match break and go on to test next winning combination.
@@ -176,6 +187,7 @@
                         }
                     }
                     if (won && !argsObject.ended) {                // if winning combination found, won is true.
+                        drawWinningLine(winningPattern);
                         alert(argsObject.nowPlaying + ' won!');
                         argsObject.ended = true;
                     }
