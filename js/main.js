@@ -17,6 +17,7 @@
 (function tictactoe() {
     'use strict';
     var argsObject = {};                 // holds collection of program variables.
+    var infoWindow;
 
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
@@ -188,12 +189,12 @@
                     }
                     if (won && !argsObject.ended) {                // if winning combination found, won is true.
                         drawWinningLine(winningPattern);
-                        alert(argsObject.nowPlaying + ' won!');
+                        popOpenInfoWindow(argsObject.nowPlaying + ' won!');
                         argsObject.ended = true;
                     }
                 });
                 if (argsObject.movesCounter === 9 && !argsObject.ended) {
-                    alert('Its a Tie!');
+                    popOpenInfoWindow('Its a Tie!');
                     argsObject.ended = true;
                 }
             }
@@ -242,6 +243,23 @@
         argsObject.paper.clear();  // working.
         drawBoard();
     });
+
+    var popOpenInfoWindow = function(message) {               // opens information window
+        message = '<h2>' + message + '</h2>';
+        var leftValue = (screen.width/2)-(496/2);      // centers window on viewport
+        var topValue = (screen.height/2)-(400/2);
+        infoWindow = window.open('','infoWindow','height=200px,width=480px,left=' + leftValue  + ',top=' + topValue + 'menubar=0, resizable=1, status=1, titlebar=0, location=0, scrollbars=0, toolbar=0, directories=0');
+        if (window.focus) {infoWindow.focus();}
+        infoWindow.document.write('<html><head><title>Helpful Information</title>');
+        infoWindow.document.write('<link rel="stylesheet" href="./css/popupStyle.css">');
+        infoWindow.document.write('</head><body>');
+        infoWindow.document.write(message);
+        infoWindow.document.write('<br/>');
+        infoWindow.document.write('<p><a href="javascript:self.close()">Close Window</a></p>');
+        infoWindow.document.write('<br/>');
+        infoWindow.document.write('</body></html>');
+        infoWindow.document.close();
+    };
 
     /* program entry point */
     init();

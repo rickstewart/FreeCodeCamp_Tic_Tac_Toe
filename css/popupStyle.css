@@ -1,0 +1,45 @@
+body {
+    font-family: 'Maven Pro', sans-serif;
+    font-weight: 400;
+    font-size: 2em;
+    height: 100%;
+    background: #E1D6B0;
+    background-size: auto;
+    position: relative;
+    overflow-x:hidden;
+    overflow-y:hidden;
+}
+h2 {
+    color: red;
+    text-align: center;
+}
+
+h4 {
+    color: blue;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+p {
+    color: black;
+    text-align: center;
+    font-size: 0.5em;
+}
+a:link {
+    color: #b54103;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #b54103;
+    text-decoration: none;
+}
+a:hover {
+    color: #4a9ca5;
+    text-decoration: none;
+}
+
+a:active {
+    color: #dd8023;
+    text-decoration: none;
+}
