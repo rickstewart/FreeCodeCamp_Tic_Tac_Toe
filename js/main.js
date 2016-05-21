@@ -40,6 +40,22 @@
         drawBoard();
     }
 
+    /*  */
+    function reset() {
+        argsObject.movesCounter = 0;
+        argsObject.moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
+        argsObject.ended = false;
+        if(argsObject.playerPiece === 'X') {
+            argsObject.playersTurn = true;
+            argsObject.nowPlaying = 'X';
+        }
+        else {
+            argsObject.playersTurn = false;
+            argsObject.nowPlaying = 'O';
+        }
+        drawBoard();
+    }
+
     /* function calculateBoardDimensions() updates the variables holding the board dimensions, as well as
      the dimensions of the container holding the board. */
     function calculateBoardDimensions() {
@@ -152,7 +168,7 @@
             while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
-            argsObject.playersTurn = false;
+            //argsObject.playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
         else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0 && !argsObject.ended) {   // if player picked 'X' mark AND its the AI's move.
@@ -160,7 +176,7 @@
             while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
             }
-            argsObject.playersTurn = false;
+            //argsObject.playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
     }
@@ -187,9 +203,14 @@
                             won = true;
                         }
                     }
-                    if (won && !argsObject.ended) {                // if winning combination found, won is true.
+                    if (won && !argsObject.ended) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
                         drawWinningLine(winningPattern);
-                        popOpenInfoWindow(argsObject.nowPlaying + ' won!');
+                        if(!argsObject.playersTurn) {
+                            popOpenInfoWindow('You win!');
+                        }
+                        else {
+                            popOpenInfoWindow('Sorry you loose...');
+                        }
                         argsObject.ended = true;
                     }
                 });
@@ -244,18 +265,22 @@
         drawBoard();
     });
 
+    $('#play-again').click(function() {
+        reset();
+    });
+
     var popOpenInfoWindow = function(message) {               // opens information window
         message = '<h2>' + message + '</h2>';
         var leftValue = (screen.width/2)-(496/2);      // centers window on viewport
         var topValue = (screen.height/2)-(400/2);
         infoWindow = window.open('','infoWindow','height=200px,width=480px,left=' + leftValue  + ',top=' + topValue + 'menubar=0, resizable=1, status=1, titlebar=0, location=0, scrollbars=0, toolbar=0, directories=0');
         if (window.focus) {infoWindow.focus();}
-        infoWindow.document.write('<html><head><title>Helpful Information</title>');
+        infoWindow.document.write('<html><head><title>Tic Tac Toe Challenge</title>');
         infoWindow.document.write('<link rel="stylesheet" href="./css/popupStyle.css">');
         infoWindow.document.write('</head><body>');
         infoWindow.document.write(message);
         infoWindow.document.write('<br/>');
-        infoWindow.document.write('<p><a href="javascript:self.close()">Close Window</a></p>');
+        infoWindow.document.write('<p><a id="play-again" href="javascript:self.close()">Close Window to Play Again</a></p>');
         infoWindow.document.write('<br/>');
         infoWindow.document.write('</body></html>');
         infoWindow.document.close();
