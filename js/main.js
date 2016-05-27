@@ -17,7 +17,6 @@
 (function tictactoe() {
     'use strict';
     var argsObject = {};                 // holds collection of program variables.
-    var infoWindow;
 
     /* function init() runs at the beginning of the program to initialize variables and settings. */
     function init() {
@@ -37,22 +36,6 @@
         argsObject.svg = document.querySelector('svg');
         argsObject.svg.removeAttribute('width');            // Raphael sets an absolute width on svg, removed for proper scaling.
         argsObject.svg.removeAttribute('height');           // Raphael sets an absolute height on svg, removed for proper scaling.
-        drawBoard();
-    }
-
-    /*  */
-    function reset() {
-        argsObject.movesCounter = 0;
-        argsObject.moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
-        argsObject.ended = false;
-        if(argsObject.playerPiece === 'X') {
-            argsObject.playersTurn = true;
-            argsObject.nowPlaying = 'X';
-        }
-        else {
-            argsObject.playersTurn = false;
-            argsObject.nowPlaying = 'O';
-        }
         drawBoard();
     }
 
@@ -153,8 +136,8 @@
 
     /*  */
     function drawWinningLine(winningPattern) {
-        var drawWinningLinePaths =  [[[66,36],[66,360]], [[195,36],[195,364]], [[320,36],[320,364]], [[36,76],[360,76]], [[36,198],[360,198]],
-            [[36,330],[360,330]], [[36,44],[360,368]], [[36,360],[360,36]]];   // vector paths for drawing the winning line.
+        var drawWinningLinePaths = [[[66, 36], [66, 360]], [[195, 36], [195, 364]], [[320, 36], [320, 364]], [[36, 76], [360, 76]], [[36, 198], [360, 198]],
+            [[36, 330], [360, 330]], [[36, 44], [360, 368]], [[36, 360], [360, 36]]];   // vector paths for drawing the winning line.
         var whichPath = drawWinningLinePaths[winningPattern];                       // pick the appropriate path for the winning combination.
         var selectedPath = ('M' + whichPath[0][0] + ' ' + whichPath[0][1] + 'L' + whichPath[1][0] + ' ' + whichPath[1][1] );
         argsObject.paper.path(selectedPath).attr({'stroke': 'green', 'stroke-width': 2});
@@ -193,7 +176,7 @@
                 }
             }
             if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
-                argsObject.allWinningCombos.forEach(function (element) {             // check each possible winning combination.
+                argsObject.allWinningCombos.forEach(function (element, index) {             // check each possible winning combination.
                     winningPattern++;
                     for (var j = 0; j < element.length; j++) {
                         if (checkTheseMoves.indexOf(element[j]) === -1 && !argsObject.ended) { // test if no match for this move.
@@ -205,18 +188,22 @@
                     }
                     if (won && !argsObject.ended) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
                         drawWinningLine(winningPattern);
-                        if(!argsObject.playersTurn) {
-                            popOpenInfoWindow('You win!');
+                        if (!argsObject.playersTurn) {
+                            argsObject.ended = true;
+                            reset('You Won!');
                         }
-                        else {
-                            popOpenInfoWindow('Sorry you loose...');
+                        else if(!argsObject.ended) {
+                            argsObject.ended = true;
+                            reset('You Lose!');
                         }
-                        argsObject.ended = true;
+                    }
+                    if(index === 7 && argsObject.ended) {
+                        argsObject.ended = false;
                     }
                 });
                 if (argsObject.movesCounter === 9 && !argsObject.ended) {
-                    popOpenInfoWindow('Its a Tie!');
-                    argsObject.ended = true;
+                    argsObject.ended = false;
+                    reset('Its a Tie!');
                 }
             }
         }
@@ -265,26 +252,23 @@
         drawBoard();
     });
 
-    $('#play-again').click(function() {
-        reset();
-    });
 
-    var popOpenInfoWindow = function(message) {               // opens information window
-        message = '<h2>' + message + '</h2>';
-        var leftValue = (screen.width/2)-(496/2);      // centers window on viewport
-        var topValue = (screen.height/2)-(400/2);
-        infoWindow = window.open('','infoWindow','height=200px,width=480px,left=' + leftValue  + ',top=' + topValue + 'menubar=0, resizable=1, status=1, titlebar=0, location=0, scrollbars=0, toolbar=0, directories=0');
-        if (window.focus) {infoWindow.focus();}
-        infoWindow.document.write('<html><head><title>Tic Tac Toe Challenge</title>');
-        infoWindow.document.write('<link rel="stylesheet" href="./css/popupStyle.css">');
-        infoWindow.document.write('</head><body>');
-        infoWindow.document.write(message);
-        infoWindow.document.write('<br/>');
-        infoWindow.document.write('<p><a id="play-again" href="javascript:self.close()">Close Window to Play Again</a></p>');
-        infoWindow.document.write('<br/>');
-        infoWindow.document.write('</body></html>');
-        infoWindow.document.close();
-    };
+    function reset(message) {
+        alert(message);
+        argsObject.movesCounter = 0;
+        argsObject.moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
+        argsObject.paper.clear();
+        drawBoard();
+        if (argsObject.playerPiece === 'X') {
+            argsObject.playersTurn = true;
+            argsObject.nowPlaying = 'X';
+        }
+        else {
+            argsObject.playersTurn = false;
+            argsObject.nowPlaying = 'O';
+        }
+        play();
+    }
 
     /* program entry point */
     init();
