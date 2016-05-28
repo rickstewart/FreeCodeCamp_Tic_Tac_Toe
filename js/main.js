@@ -164,10 +164,57 @@
         }
     }
 
-    /*  */
+    // /*  */
+    //
+    // function checkForWinOrTie() {       // mark - X or O.
+    //     var checkTheseMoves = '';            // holds moves made so far by either X or O.
+    //     var won = false;
+    //     var winningPattern = -1;
+    //     if (argsObject.movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
+    //         for (var i = 0; i < 9; i++) {
+    //             if (argsObject.moves[i] === argsObject.nowPlaying) {
+    //                 checkTheseMoves = checkTheseMoves + i;
+    //             }
+    //         }
+    //         if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
+    //             argsObject.allWinningCombos.forEach(function (element, index) {             // check each possible winning combination.
+    //                 winningPattern++;
+    //                 for (var j = 0; j < element.length; j++) {
+    //                     if (checkTheseMoves.indexOf(element[j]) === -1 && !argsObject.ended) { // test if no match for this move.
+    //                         break;                                       // if no match break and go on to test next winning combination.
+    //                     }
+    //                     if (j === 2) {
+    //                         won = true;           // if all 3 winning move positions matched, someone won.
+    //                     }
+    //                 }
+    //                 if (won && !argsObject.ended) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
+    //                     drawWinningLine(winningPattern);
+    //                     if (!argsObject.playersTurn) {  // if won == true and playersTurn == false, player is the winner.
+    //                         argsObject.ended = true;
+    //                         reset('You Won!');          //  reset for next game.
+    //                     }
+    //                     else if(!argsObject.ended) {   // else it was the AI's win.
+    //                         argsObject.ended = true;
+    //                         reset('You Lose!');          //  reset for next game.
+    //                     }
+    //                 }
+    //                 if(index === 7 && argsObject.ended) {  // if allWinningCombos.forEach finished iterations.
+    //                     argsObject.ended = false;          // set game 'ended' to false for start of next game.
+    //                 }
+    //             });
+    //             if (argsObject.movesCounter === 9 && !argsObject.ended) { // all 9 moves taken, and not a win or a lose.
+    //                 argsObject.ended = false;
+    //                 reset('Its a Tie!');          //  reset for next game.
+    //             }
+    //         }
+    //     }
+    // }
+
+
     function checkForWinOrTie() {       // mark - X or O.
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
+        var tripped = false;
         var winningPattern = -1;
         if (argsObject.movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
             for (var i = 0; i < 9; i++) {
@@ -176,10 +223,10 @@
                 }
             }
             if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
-                argsObject.allWinningCombos.forEach(function (element, index) {             // check each possible winning combination.
+                for (var k = 0; k < argsObject.allWinningCombos.length; k++) {             // check each possible winning combination.
                     winningPattern++;
-                    for (var j = 0; j < element.length; j++) {
-                        if (checkTheseMoves.indexOf(element[j]) === -1 && !argsObject.ended) { // test if no match for this move.
+                    for (var j = 0; j < argsObject.allWinningCombos[k].length; j++) {
+                        if (checkTheseMoves.indexOf(argsObject.allWinningCombos[k][j]) === -1 && !argsObject.ended) { // test if no match for this move.
                             break;                                       // if no match break and go on to test next winning combination.
                         }
                         if (j === 2) {
@@ -190,17 +237,23 @@
                         drawWinningLine(winningPattern);
                         if (!argsObject.playersTurn) {  // if won == true and playersTurn == false, player is the winner.
                             argsObject.ended = true;
+                            tripped = true;
                             reset('You Won!');          //  reset for next game.
                         }
-                        else if(!argsObject.ended) {   // else it was the AI's win.
+                        else if (!argsObject.ended) {   // else it was the AI's win.
                             argsObject.ended = true;
+                            tripped = true;
                             reset('You Lose!');          //  reset for next game.
                         }
                     }
-                    if(index === 7 && argsObject.ended) {  // if allWinningCombos.forEach finished iterations.
+                    if (k === 7 && argsObject.ended) {  // if allWinningCombos.forEach finished iterations.
                         argsObject.ended = false;          // set game 'ended' to false for start of next game.
+                        tripped = true;
                     }
-                });
+                    if (tripped) {
+                        break;
+                    }
+                }
                 if (argsObject.movesCounter === 9 && !argsObject.ended) { // all 9 moves taken, and not a win or a lose.
                     argsObject.ended = false;
                     reset('Its a Tie!');          //  reset for next game.
