@@ -183,27 +183,27 @@
                             break;                                       // if no match break and go on to test next winning combination.
                         }
                         if (j === 2) {
-                            won = true;
+                            won = true;           // if all 3 winning move positions matched, someone won.
                         }
                     }
                     if (won && !argsObject.ended) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
                         drawWinningLine(winningPattern);
-                        if (!argsObject.playersTurn) {
+                        if (!argsObject.playersTurn) {  // if won == true and playersTurn == false, player is the winner.
                             argsObject.ended = true;
-                            reset('You Won!');
+                            reset('You Won!');          //  reset for next game.
                         }
-                        else if(!argsObject.ended) {
+                        else if(!argsObject.ended) {   // else it was the AI's win.
                             argsObject.ended = true;
-                            reset('You Lose!');
+                            reset('You Lose!');          //  reset for next game.
                         }
                     }
-                    if(index === 7 && argsObject.ended) {
-                        argsObject.ended = false;
+                    if(index === 7 && argsObject.ended) {  // if allWinningCombos.forEach finished iterations.
+                        argsObject.ended = false;          // set game 'ended' to false for start of next game.
                     }
                 });
-                if (argsObject.movesCounter === 9 && !argsObject.ended) {
+                if (argsObject.movesCounter === 9 && !argsObject.ended) { // all 9 moves taken, and not a win or a lose.
                     argsObject.ended = false;
-                    reset('Its a Tie!');
+                    reset('Its a Tie!');          //  reset for next game.
                 }
             }
         }
@@ -259,6 +259,7 @@
         argsObject.moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
         argsObject.paper.clear();
         drawBoard();
+        argsObject.ended = false;
         if (argsObject.playerPiece === 'X') {
             argsObject.playersTurn = true;
             argsObject.nowPlaying = 'X';
