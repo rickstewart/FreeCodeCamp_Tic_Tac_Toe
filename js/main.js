@@ -25,7 +25,6 @@
         argsObject.playerPiece = '';                             // holds player's choice of playing X ro O.
         argsObject.movesCounter = 0;                             // holds a running count of moves made.
         argsObject.playersTurn = false;                          // holds true if players turn, false if AI's turn.
-        argsObject.ended = false;                                // holds state of game play - false still playing - true game won or tied.
         argsObject.nowPlaying = '';                              // holds mark of current turn holder, player or AI.
         argsObject.xRef = document.getElementById('X');          // holds a reference to radio button X label.
         argsObject.oRef = document.getElementById('O');          // holds a reference to radio button O label.
@@ -146,15 +145,15 @@
     /* function play() sets up a turn based loop to control the flow of the game. */
     function play() {
         var randomNumber;
-        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0 && !argsObject.ended) {   // if player picked 'O' mark AND its the AI's move.
+        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
             while (argsObject.moves[randomNumber] !== 'U') {
-                randomNumber = Math.floor((Math.random() * 8) + 1);
+                randomNumber = Math.floor(Math.random() * 9);
             }
             //argsObject.playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
-        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0 && !argsObject.ended) {   // if player picked 'X' mark AND its the AI's move.
+        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
             randomNumber = Math.floor((Math.random() * 8) + 1);
             while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor((Math.random() * 8) + 1);
@@ -163,53 +162,6 @@
             makeMove(randomNumber, 'AI');
         }
     }
-
-    // /*  */
-    //
-    // function checkForWinOrTie() {       // mark - X or O.
-    //     var checkTheseMoves = '';            // holds moves made so far by either X or O.
-    //     var won = false;
-    //     var winningPattern = -1;
-    //     if (argsObject.movesCounter > 4) {              // ignore less than 5 moves, takes at least 5 to win.
-    //         for (var i = 0; i < 9; i++) {
-    //             if (argsObject.moves[i] === argsObject.nowPlaying) {
-    //                 checkTheseMoves = checkTheseMoves + i;
-    //             }
-    //         }
-    //         if (checkTheseMoves.length > 2) {                               // no need to run if not at least 3 moves.
-    //             argsObject.allWinningCombos.forEach(function (element, index) {             // check each possible winning combination.
-    //                 winningPattern++;
-    //                 for (var j = 0; j < element.length; j++) {
-    //                     if (checkTheseMoves.indexOf(element[j]) === -1 && !argsObject.ended) { // test if no match for this move.
-    //                         break;                                       // if no match break and go on to test next winning combination.
-    //                     }
-    //                     if (j === 2) {
-    //                         won = true;           // if all 3 winning move positions matched, someone won.
-    //                     }
-    //                 }
-    //                 if (won && !argsObject.ended) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
-    //                     drawWinningLine(winningPattern);
-    //                     if (!argsObject.playersTurn) {  // if won == true and playersTurn == false, player is the winner.
-    //                         argsObject.ended = true;
-    //                         reset('You Won!');          //  reset for next game.
-    //                     }
-    //                     else if(!argsObject.ended) {   // else it was the AI's win.
-    //                         argsObject.ended = true;
-    //                         reset('You Lose!');          //  reset for next game.
-    //                     }
-    //                 }
-    //                 if(index === 7 && argsObject.ended) {  // if allWinningCombos.forEach finished iterations.
-    //                     argsObject.ended = false;          // set game 'ended' to false for start of next game.
-    //                 }
-    //             });
-    //             if (argsObject.movesCounter === 9 && !argsObject.ended) { // all 9 moves taken, and not a win or a lose.
-    //                 argsObject.ended = false;
-    //                 reset('Its a Tie!');          //  reset for next game.
-    //             }
-    //         }
-    //     }
-    // }
-
 
     function checkForWinOrTie() {       // mark - X or O.
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
@@ -226,40 +178,72 @@
                 for (var k = 0; k < argsObject.allWinningCombos.length; k++) {             // check each possible winning combination.
                     winningPattern++;
                     for (var j = 0; j < argsObject.allWinningCombos[k].length; j++) {
-                        if (checkTheseMoves.indexOf(argsObject.allWinningCombos[k][j]) === -1 && !argsObject.ended) { // test if no match for this move.
+                        if (checkTheseMoves.indexOf(argsObject.allWinningCombos[k][j]) === -1) { // test if no match for this move.
                             break;                                       // if no match break and go on to test next winning combination.
                         }
                         if (j === 2) {
                             won = true;           // if all 3 winning move positions matched, someone won.
                         }
                     }
-                    if (won && !argsObject.ended) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
+                    if (won) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
+                        console.log('checkForWinOrTie() before drawWinningLine()');
                         drawWinningLine(winningPattern);
                         if (!argsObject.playersTurn) {  // if won == true and playersTurn == false, player is the winner.
-                            argsObject.ended = true;
                             tripped = true;
-                            reset('You Won!');          //  reset for next game.
+                            reset(true, 'You Won!');          //  reset for next game.
                         }
-                        else if (!argsObject.ended) {   // else it was the AI's win.
-                            argsObject.ended = true;
+                        else {   // else it was the AI's win.
                             tripped = true;
-                            reset('You Lose!');          //  reset for next game.
+                            reset(true, 'You Lose!');          //  reset for next game.
                         }
                     }
-                    if (k === 7 && argsObject.ended) {  // if allWinningCombos.forEach finished iterations.
-                        argsObject.ended = false;          // set game 'ended' to false for start of next game.
+                    if (k === 7) {  // if allWinningCombos.forEach finished iterations.
                         tripped = true;
                     }
                     if (tripped) {
                         break;
                     }
                 }
-                if (argsObject.movesCounter === 9 && !argsObject.ended) { // all 9 moves taken, and not a win or a lose.
-                    argsObject.ended = false;
-                    reset('Its a Tie!');          //  reset for next game.
+                if (argsObject.movesCounter === 9) { // all 9 moves taken, and not a win or a lose.
+                    reset(true, 'Its a Tie!');          //  reset for next game.
                 }
             }
         }
+    }
+
+    /*  */
+    function xClicked() {
+        argsObject.playerPiece = 'X';
+        argsObject.xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
+        argsObject.xRef.style.color = 'black';
+        argsObject.xRef.style.border = 'solid 2px #7B56A7';
+        argsObject.xRef.style.borderRadius = '0.6em';
+        argsObject.xRef.style.padding = '1px 0 1px 5px';
+        argsObject.xRef.style.margin = '0 5px 0 0';
+        argsObject.oRef.style.backgroundColor = 'transparent';          //  style radio button label O.
+        argsObject.oRef.style.color = 'orange';
+        argsObject.oRef.style.border = 'none';
+        argsObject.oRef.style.borderRadius = '0';
+        argsObject.oRef.style.padding = '0';
+        argsObject.oRef.style.margin = '0';
+        argsObject.playersTurn = true;
+    }
+
+    /*  */
+    function oClicked() {
+        argsObject.playerPiece = 'O';
+        argsObject.oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
+        argsObject.oRef.style.color = 'black';
+        argsObject.oRef.style.border = 'solid 2px #7B56A7';
+        argsObject.oRef.style.borderRadius = '0.6em';
+        argsObject.oRef.style.padding = '1px 3px 1px 2px';
+        argsObject.oRef.style.margin = '0 5px 0 0';
+        argsObject.xRef.style.backgroundColor = 'transparent';          //  style radio button label X.
+        argsObject.xRef.style.color = 'orange';
+        argsObject.xRef.style.border = 'none';
+        argsObject.xRef.style.borderRadius = '0';
+        argsObject.xRef.style.padding = '0';
+        argsObject.xRef.style.margin = '0';
     }
 
     /* Listener added to detect player's choice of playing as X or O.  Once fired the group is disabled from further changes. */
@@ -267,32 +251,25 @@
         document.getElementById('radioO').disabled = true;
         document.getElementById('radioX').disabled = true;
         if (e.currentTarget.id === 'radioX') {
-            argsObject.playerPiece = 'X';
-            argsObject.xRef.style.backgroundColor = '#FFA500';          //  style radio button label X.
-            argsObject.xRef.style.color = 'black';
-            argsObject.xRef.style.border = 'solid 2px #7B56A7';
-            argsObject.xRef.style.borderRadius = '0.6em';
-            argsObject.xRef.style.padding = '1px 0 1px 5px';
-            argsObject.xRef.style.margin = '0 5px 0 0';
-            argsObject.playersTurn = true;
+            xClicked();
             play();
         }
         else {
-            argsObject.playerPiece = 'O';
-            argsObject.oRef.style.backgroundColor = '#FFA500';          //  style radio button label O.
-            argsObject.oRef.style.color = 'black';
-            argsObject.oRef.style.border = 'solid 2px #7B56A7';
-            argsObject.oRef.style.borderRadius = '0.6em';
-            argsObject.oRef.style.padding = '1px 3px 1px 2px';
-            argsObject.oRef.style.margin = '0 5px 0 0';
+            oClicked();
             play();
         }
+    });
+
+    /*  */
+    $('#change').click(function() {
+        argsObject.playerPiece === 'X' ? oClicked() : xClicked();
+        reset(false, '');
     });
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
     $('#canvas_container').on('click', '.clickPad', function (e) {  // syntax for Listener on dynamically created content.
         argsObject.lastClickedSquare = e.currentTarget.id;                    // get id of clicked square.
-        if (argsObject.moves[argsObject.lastClickedSquare] === 'U' && !argsObject.ended) {
+        if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
             makeMove(argsObject.lastClickedSquare, 'player');
         }
         play();
@@ -306,8 +283,10 @@
     });
 
 
-    function reset(message) {
-        alert(message);
+    function reset(useAlert, message) {
+        if(useAlert) {
+            alert(message);
+        }
         argsObject.movesCounter = 0;
         argsObject.moves = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
         argsObject.paper.clear();
