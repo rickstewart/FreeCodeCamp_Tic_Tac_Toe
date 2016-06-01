@@ -214,6 +214,25 @@
                     else if(lastAI === 2) {move = 0;}
                     else if(lastAI === 6) {move = 0;}
                 }
+                else if (lastAI === 4 && (lastPlayer === 1 || lastPlayer === 5)) {   // AI in center && player picked edge 1 or 5.
+                    move = 6;
+                }
+                else if (lastAI === 4 && (lastPlayer === 3 || lastPlayer === 7)) {   // AI in center && player picked edge 3 or 7.
+                    move = 2;
+                }
+                else if (lastAI === 4 && lastPlayer === 0) {   // AI in center && player picked corner 0.
+                    move = 8;
+                }
+                else if (lastAI === 4 && lastPlayer === 2) {   // AI in center && player picked corner 2.
+                    move = 6;
+                }
+                else if (lastAI === 4 && lastPlayer === 6) {   // AI in center && player picked corner 6.
+                    move = 2;
+                }
+                else if (lastAI === 4 && lastPlayer === 8) {   // AI in center && player picked corner 8.
+                    move = 0;
+                }
+
             }
              else if (argsObject.movesCounter === 4) {                                  // AIs third move.
                     if(lastPlayer === 1 && argsObject.moves[4] !== 'U') {               // if player blocked win using square 1, center open.
@@ -228,24 +247,25 @@
                     else if(lastPlayer === 7 && argsObject.moves[4] !== 'U') {          // if player blocked win using square 7, center open.
                         argsObject.moves[0] !== 'U' ? 2 : 0;
                     }
-                    else if(lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8) {  // player last move to corner && player in center.
+                    else if(argsObject.moves[4] === 'O' && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {  // player last move to corner && player in center.
                         if(argsObject.moves[0] === 'U') {move = 0;}              // pick last still open corner.
                         else if(argsObject.moves[2] === 'U') {move = 2;}
                         else if(argsObject.moves[6] === 'U') {move = 6;}
                         else if(argsObject.moves[8] === 'U') {move = 8;}
                     }
-                    else if(lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7) {  // player last move to edge && player in center.
+                    else if(argsObject.moves[4] === 'O' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {  // player last move to edge && player in center.
                         if(lastPlayer === 1) {move = 0;}              // pick opposite edge.
                         else if(lastPlayer === 3) {move = 5;}
                         else if(lastPlayer === 5) {move = 3;}
                         else if(lastPlayer === 7) {move = 1;}
                     }
+                    else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7) ) {  // AI in center,
+                        
+                    }
                 }
                 else if (argsObject.movesCounter === 6) {                              // AIs forth move.
-                        
+                        ;
                 }
-
-            }
 
             argsObject.lastMoveAI = move;
             makeMove(move, 'AI');
