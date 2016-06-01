@@ -26,6 +26,7 @@
         argsObject.movesCounter = 0;                             // holds a running count of moves made.
         argsObject.playersTurn = false;                          // holds true if players turn, false if AI's turn.
         argsObject.nowPlaying = '';                              // holds mark of current turn holder, player or AI.
+        argsObject.lastMoveAI = '';                              // holds the position of the AIs last move.
         argsObject.xRef = document.getElementById('X');          // holds a reference to radio button X label.
         argsObject.oRef = document.getElementById('O');          // holds a reference to radio button O label.
         argsObject.coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
@@ -146,7 +147,7 @@
     function play() {
         var randomNumber;
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
-            randomNumber = Math.floor((Math.random() * 8) + 1);
+            randomNumber = Math.floor(Math.floor(Math.random() * 9));
             while (argsObject.moves[randomNumber] !== 'U') {
                 randomNumber = Math.floor(Math.random() * 9);
             }
@@ -154,13 +155,48 @@
             makeMove(randomNumber, 'AI');
         }
         else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
-            randomNumber = Math.floor((Math.random() * 8) + 1);
+            randomNumber = Math.floor(Math.floor(Math.random() * 9));
             while (argsObject.moves[randomNumber] !== 'U') {
-                randomNumber = Math.floor((Math.random() * 8) + 1);
+                randomNumber = Math.floor(Math.floor(Math.random() * 9));
             }
             //argsObject.playersTurn = false;
             makeMove(randomNumber, 'AI');
         }
+    }
+
+    function hardModePlay() {
+        var openingMoves = [0, 2, 4, 6, 8];
+        var corners = [0, 2, 6, 8];
+        var edges = [1, 3, 5, 7];
+        var move = '';
+        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
+            if (argsObject.movesCounter === 0) {                                       // test if this is the AIs first move.
+                move = openingMoves[Math.floor(Math.random() * 9)];                   // generate an opening move.
+                argsObject.lastMoveAI = move;
+            }
+            else if (corners.indexOf(argsObject.lastClickedSquare) > -1 && argsObject.lastMoveAI !== 4) { // Player picked corner && AI not in center.
+                move = 0;                                           // pick first corner to test.
+                while (argsObject.moves[move] !== 'U') {            // find an open corner on the board.
+                    move = corners[Math.floor(Math.random() * 4)];  // try another corner. ( random pick to make game feel more natural )
+                    argsObject.lastMoveAI = move;
+                }
+            }  // Player picked an edge && AI not in center, && its the AIs second move.
+            else if (edges.indexOf(argsObject.lastClickedSquare) > -1 && argsObject.lastMoveAI !== 4 && argsObject.movesCounter < 3) {
+                move = 4;                                       // move to center.
+                argsObject.lastMoveAI = move;
+            }  // AI not in center, && its at least the AIs third move.
+            else if (argsObject.lastMoveAI !== 4 && argsObject.movesCounter > 2) {
+                
+            }
+
+            makeMove(move, 'AI');
+        }
+        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+
+
+            makeMove(move, 'AI');
+        }
+
     }
 
     function checkForWinOrTie() {       // mark - X or O.
@@ -261,7 +297,7 @@
     });
 
     /*  */
-    $('#change').click(function() {
+    $('#change').click(function () {
         argsObject.playerPiece === 'X' ? oClicked() : xClicked();
         reset(false, '');
     });
@@ -284,7 +320,7 @@
 
 
     function reset(useAlert, message) {
-        if(useAlert) {
+        if (useAlert) {
             alert(message);
         }
         argsObject.movesCounter = 0;
