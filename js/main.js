@@ -164,18 +164,57 @@
         }
     }
 
+    /*  */
+    function getMovesX() {
+        var movesX = [];
+        for(var i = 0; i < argsObject.moves.length; i++) {
+            if(argsObject.moves[i] === 'X') {
+                movesX.push[i];
+            }
+        }
+        return movesX;
+    }
+
+    /*  */
+    function getMovesO() {
+        var movesO = [];
+        for(var i = 0; i < argsObject.moves.length; i++) {
+            if(argsObject.moves[i] === 'O') {
+                movesO.push[i];
+            }
+        }
+        return movesO;
+    }
+
+    /* works for numbers, order of elements can be different and arrays still be equal */
+    function testArrayEquality(arr1, arr2) {
+        if(arr1.sort().join(',') === arr2.sort().join(',')){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    /* explore of possible to make a winning move */
+    function nextMoveWinTest() {
+        
+    }
+
     function hardModePlay() {
         var openingMoves = [0, 2, 4, 6, 8];
         var corners = [0, 2, 6, 8];
         var edges = [1, 3, 5, 7];
         var move = '';
+        var movesX = getMovesX();
+        var movesO = getMovesO();
         var lastAI = argsObject.lastMoveAI;
         var lastPlayer = argsObject.lastClickedSquare;
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {     // player picked 'O' mark && its the AI's move.
-            if (argsObject.movesCounter === 0) {                                       // AIs first move.
+            if (argsObject.movesCounter === 0) {                                       // *****AIs first move.*****
                 move = openingMoves[Math.floor(Math.random() * 9)];                    // randomize an opening move. ( make game seem more natural )
             }
-            else if (argsObject.movesCounter === 2) {                                  // AIs second move.
+            else if (argsObject.movesCounter === 2) {                                  // *****AIs second move.*****
                 if(lastPlayer === 4) {                                                 // player picked center square.
                     if(lastAI === 0) {move = 8;}
                     else if(lastAI === 2) {move = 6;}
@@ -232,9 +271,8 @@
                 else if (lastAI === 4 && lastPlayer === 8) {   // AI in center && player picked corner 8.
                     move = 0;
                 }
-
             }
-             else if (argsObject.movesCounter === 4) {                                  // AIs third move.
+             else if (argsObject.movesCounter === 4) {                                  // *****AIs third move.*****
                     if(lastPlayer === 1 && argsObject.moves[4] !== 'U') {               // if player blocked win using square 1, center open.
                         argsObject.moves[6] !== 'U' ? 8 : 6;
                     }
@@ -260,10 +298,10 @@
                         else if(lastPlayer === 7) {move = 1;}
                     }
                     else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7) ) {  // AI in center,
-                        
+
                     }
                 }
-                else if (argsObject.movesCounter === 6) {                              // AIs forth move.
+                else if (argsObject.movesCounter === 6) {                              // *****AIs forth move.*****
                         ;
                 }
 
@@ -301,7 +339,6 @@
                         }
                     }
                     if (won) {    // if winning combination found, won is true. (argsObject.ended prevents 'if' running more than once).
-                        console.log('checkForWinOrTie() before drawWinningLine()');
                         drawWinningLine(winningPattern);
                         if (!argsObject.playersTurn) {  // if won == true and playersTurn == false, player is the winner.
                             tripped = true;
@@ -421,3 +458,5 @@
     /* program entry point */
     init();
 })();
+
+//TODO: test in browser console for lingering console.log
