@@ -196,11 +196,31 @@
         }
     }
     
-    /* explore of possible to make a winning move */
-    function nextMoveWinTest() {
-        
+    /* explore if possible to make a winning move by current player. Returns winning square if there is one. */
+    function nextMoveWinTest(player) {
+        var moves = '';
+        var noElementMatch = -1;
+        for (var i = 0; i < 9; i++) {
+            if (argsObject.moves[i] === player) {
+                moves = moves + i;
+            }
+        }
+        for (var k = 0; k < argsObject.allWinningCombos.length; k++) {             // check each possible winning combination.
+            noElementMatch = -1;
+            for (var j = 0; j < argsObject.allWinningCombos[k].length; j++) {
+                if (moves.indexOf(argsObject.allWinningCombos[k][j]) === -1) { // test if no match for this move.
+                    noElementMatch = argsObject.allWinningCombos[k][j];
+                    break;                                       // if no match break and go on to test next winning combination.
+                }
+                if (j === 1) {                                  // when true found 2 out of 3 matches in a winning combination.
+                    return noElementMatch;                      // noElementMatch is the square to make next move a winning move.
+                }
+            }
+        }
+        return noElementMatch;                                 // returns -1 if no winning move found.
     }
 
+    /* https://www.quora.com/Is-there-a-way-to-never-lose-at-Tic-Tac-Toe */
     function hardModePlay() {
         var openingMoves = [0, 2, 4, 6, 8];
         var corners = [0, 2, 6, 8];
@@ -208,6 +228,8 @@
         var move = '';
         var movesX = getMovesX();
         var movesO = getMovesO();
+        var winningMoveX = nextMoveWinTest('X');
+        var winningMoveO = nextMoveWinTest('O');
         var lastAI = argsObject.lastMoveAI;
         var lastPlayer = argsObject.lastClickedSquare;
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {     // player picked 'O' mark && its the AI's move.
@@ -273,7 +295,13 @@
                 }
             }
              else if (argsObject.movesCounter === 4) {                                  // *****AIs third move.*****
-                    if(lastPlayer === 1 && argsObject.moves[4] !== 'U') {               // if player blocked win using square 1, center open.
+                    if(movesX !== -1) {                                                 // test if there is a AI winning move.
+                        move = movesX;
+                    }
+                    else if(movesO !== -1) {                                            // test if there is a winning player move to block.
+                        move = movesO;
+                    }
+                    else if(lastPlayer === 1 && argsObject.moves[4] !== 'U') {          // if player blocked win using square 1, center open.
                         argsObject.moves[6] !== 'U' ? 8 : 6;
                     }
                     else if(lastPlayer === 3 && argsObject.moves[4] !== 'U') {          // if player blocked win using square 3, center open.
@@ -297,12 +325,19 @@
                         else if(lastPlayer === 5) {move = 3;}
                         else if(lastPlayer === 7) {move = 1;}
                     }
-                    else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7) ) {  // AI in center,
-
+                    else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7) ) {  // AI in center && player last move an edge.
+                        if(lastAI === 0 && lastPlayer === 1) {move = 6;}
+                        else if(lastAI === 0 && lastPlayer === 3) {move = 2;}
+                        else if(lastAI === 2 && lastPlayer === 1) {move = 8;}
+                        else if(lastAI === 2 && lastPlayer === 5) {move = 0;}
+                        else if(lastAI === 6 && lastPlayer === 3) {move = 8;}
+                        else if(lastAI === 6 && lastPlayer === 7) {move = 0;}
+                        else if(lastAI === 8 && lastPlayer === 5) {move = 6;}
+                        else if(lastAI === 8 && lastPlayer === 7) {move = 2;}
                     }
                 }
-                else if (argsObject.movesCounter === 6) {                              // *****AIs forth move.*****
-                        ;
+                else if (argsObject.movesCounter === 9) {                              // *****AIs last move.*****
+                        move = argsObject.moves.indexOf('U');
                 }
 
             argsObject.lastMoveAI = move;
