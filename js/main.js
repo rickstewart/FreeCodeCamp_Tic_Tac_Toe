@@ -51,7 +51,8 @@
         else {                                   // else viewport aspect ratio is portrait shaped.
             argsObject.gameboardLengthOfSide = argsObject.viewportWidth * 0.5;  // calculate length of a side of board container. ( container is square )
         }
-        argsObject.zeroCoordinateX = (argsObject.viewportWidth / 2) - (argsObject.gameboardLengthOfSide / 2);  // find upper left corner of container - X coordinate.
+        // find upper left corner of container - X coordinate.
+        argsObject.zeroCoordinateX = (argsObject.viewportWidth / 2) - (argsObject.gameboardLengthOfSide / 2);
         argsObject.zeroCoordinateY = argsObject.headerHeight + 60; // find upper left corner of container - Y coordinate. ( 60 pixels down from header )
     }
 
@@ -144,10 +145,10 @@
     }
 
     /*  */
-    function makeRandomMove(){
-        var randomNumber = Math.floor(Math.floor(Math.random() * 9));
+    function makeRandomMove(maxValue){
+        var randomNumber = Math.floor(Math.floor(Math.random() * (maxValue + 1)));
         while (argsObject.moves[randomNumber] !== 'U') {
-            randomNumber = Math.floor(Math.random() * 9);
+            randomNumber = Math.floor(Math.random() * (maxValue + 1));
         }
         return randomNumber;
     }
@@ -207,7 +208,6 @@
 
     /* https://www.quora.com/Is-there-a-way-to-never-lose-at-Tic-Tac-Toe */
     function hardModePlay() {
-        var openingMoves = [0, 2, 4, 6, 8];
         var corners = [0, 2, 6, 8];
         var move = '';
         var winningMoveX = -1;
@@ -217,8 +217,8 @@
         if(argsObject.lastClickedSquare !== null) {
             lastPlayer = parseInt(argsObject.lastClickedSquare);
         }
-
-        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {     // player picked 'O' mark && its the AI's move.
+        /* Player picked 'O', AI is making the first move. */
+        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {
             if (argsObject.movesCounter === 0) {                                       // *****AIs first move.*****
                // move = openingMoves[Math.floor(Math.random() * 5)];                    // randomize an opening move. ( make game seem more natural )
                 move = 4;
@@ -344,7 +344,8 @@
                 else if (lastPlayer === 7 && argsObject.moves[4] !== 'U') {          // if player blocked win using square 7, center open.
                     argsObject.moves[0] !== 'U' ? 2 : 0;
                 }
-                else if (argsObject.moves[4] === 'O' && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {  // player last move to corner && player in center.
+                // player last move to corner && player in center.
+                else if (argsObject.moves[4] === 'O' && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {
                     if (argsObject.moves[0] === 'U') {
                         move = 0;
                     }              // pick last still open corner.
@@ -358,7 +359,8 @@
                         move = 8;
                     }
                 }
-                else if (argsObject.moves[4] === 'O' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {  // player last move to edge && player in center.
+                // player last move to edge && player in center.
+                else if (argsObject.moves[4] === 'O' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {
                     if (lastPlayer === 1) {
                         move = 0;
                     }              // pick opposite edge.
@@ -372,7 +374,8 @@
                         move = 1;
                     }
                 }
-                else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {  // AI in center && player last move an edge.
+                // AI in center && player last move an edge.
+                else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {
                     if (lastAI === 0 && lastPlayer === 1) {
                         move = 6;
                     }
@@ -415,7 +418,7 @@
                     move = winningMoveO;
                 }
                 else {
-                    move = makeRandomMove();
+                    move = makeRandomMove(8);
                 }
             }
             else if (argsObject.movesCounter === 8) {                              // *****AIs last move.*****
@@ -424,22 +427,41 @@
             argsObject.lastMoveAI = move;
             makeMove(move, 'AI');
         }
-        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+        /* Player picked 'X', Player moved first and now it is the AIs turn. */
+        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {
                 if (argsObject.movesCounter === 1) {                                  // *****AIs first move.*****
-                    if (argsObject.moves[4] === 'X') {                                // player picked center square.
-                        move = corners[Math.floor(Math.random() * 5)];                // player picked center, AI plays a random corner.
+                    if (lastPlayer === 4) {                                           // player picked center square for their first move.
+                        move = corners[makeRandomMove(5)];                            // AI plays a random corner.
                     }
-                    else {                                                            // player picks anything other than the center, AI picks the center.
-                        move = 4 ;
+                    else {
+                        move = 4 ;                                                    // if player picked other than center, AI picks the center.
                     }
                 }
-                else if (argsObject.movesCounter === 3) {                             // *****AIs second move.*****
-                    if (argsObject.moves[4] === 'O' && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) { // AI in center and player last move was a corner.
+                if (argsObject.movesCounter === 3) {                                  // *****AIs second move.*****
+                    // AI in center and player last move was a corner.
+                    if (lastAI === 4 && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {
+                        var randomNum = makeRandomMove(8);
+                        while (corners[randomNum] !== 'U') {
+                            randomNum = makeRandomMove(8);                            // AI picks an open corner.
+                        }
+                        move = randomNum;
+                    }
+                    else if() {
+                        
+                    }
+                    else {
+                        winningMoveO = nextMoveWinTest('O');
+                        if (winningMoveO !== -1) {                                  // test if there is a winning player move to block.
+                            move = winningMoveO;
+                        }
+                    }
+                }
+                if (argsObject.movesCounter === 5) {                                  // *****AIs third move.*****
 
-                    }
-                    argsObject.lastMoveAI = move;
-                    makeMove(move, 'AI');
                 }
+            argsObject.lastMoveAI = move;
+            makeMove(move, 'AI');
+        }
     }
 
     function checkForWinOrTie() {       // mark - X or O.
