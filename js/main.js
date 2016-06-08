@@ -224,7 +224,7 @@
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {
             // *****AIs first move.*****
             if (argsObject.movesCounter === 0) {
-                move = openingMoves[makeRandomMove(5)];                    // randomize an opening move. ( make game seem more natural )
+                move = openingMoves[makeRandomMove(4)];                    // randomize an opening move. ( make game seem more natural )
             }
             // *****AIs second move.*****
             else if (argsObject.movesCounter === 2) {
@@ -493,11 +493,18 @@
                     }
                 }
                 else if(argsObject.moves[4] === 'X') {  // player in the center, AI on a corner.
-                    if((lastPlayer === '0' && lastAI === 8) || (lastPlayer === '8' && lastAI === 0)) {            // player picks another open corner.
+                    if((lastPlayer === 0 && lastAI === 8) || (lastPlayer === 8 && lastAI === 0)) {            // player picks another open corner.
                         move = 2;
                     }
-                    else if((lastPlayer === '2' && lastAI === 6) || (lastPlayer === '6' && lastAI === 2)) {
+                    else if((lastPlayer === 2 && lastAI === 6) || (lastPlayer === 6 && lastAI === 2)) {
                         move = 0;
+                    }
+                    else {
+                        randomNum = Math.floor(Math.random() * 4);
+                        while (argsObject.moves[edges[randomNum]] !== 'U') {
+                            randomNum = Math.floor(Math.random() * 4);                            // AI picks any edge.
+                        }
+                        move = edges[randomNum];
                     }
                 }
             }
@@ -516,7 +523,7 @@
             }
             // *****AIs forth move.*****
             else if (argsObject.movesCounter === 7) {
-
+                move = makeRandomMove(8);
             }
             winningMoveO = nextMoveWinTest('O');
             winningMoveX = nextMoveWinTest('X');
@@ -530,7 +537,6 @@
             makeMove(move, 'AI');
         }
     }
-
     function checkForWinOrTie() {       // mark - X or O.
         var checkTheseMoves = '';            // holds moves made so far by either X or O.
         var won = false;
