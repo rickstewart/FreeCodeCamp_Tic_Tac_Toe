@@ -452,9 +452,9 @@
             else if (argsObject.movesCounter === 3) {
                 // AI in center and player last move was a corner.
                 if (lastAI === 4 && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {
-                    randomNum = makeRandomMove(8);
-                    while (edges[randomNum] !== 'U') {
-                        randomNum = makeRandomMove(8);                            // AI picks any edge.
+                    randomNum = makeRandomMove(4);
+                    while (argsObject.moves[edges[randomNum]] !== 'U') {
+                        randomNum = makeRandomMove(4);                            // AI picks any edge.
                     }
                     move = randomNum;
                 }
