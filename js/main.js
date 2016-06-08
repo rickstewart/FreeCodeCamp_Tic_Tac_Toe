@@ -27,6 +27,7 @@
         argsObject.playersTurn = false;                          // holds true if players turn, false if AI's turn.
         argsObject.nowPlaying = '';                              // holds mark of current turn holder, player or AI.
         argsObject.lastMoveAI = '';                              // holds the position of the AIs last move.
+        argsObject.mode = 'normal';                              // holds current mode of normalModePlay - Normal or Hard.
         argsObject.xRef = document.getElementById('X');          // holds a reference to radio button X label.
         argsObject.oRef = document.getElementById('O');          // holds a reference to radio button O label.
         argsObject.coordCenterSquare = [[60, 60], [188, 60], [316, 60], [60, 188], [188, 188], [318, 188], [60, 316], [188, 318], [318, 318]];
@@ -71,7 +72,6 @@
     }
 
     /* function addClickDetectPad() adds a square area to each square on the game board that will be sensitive to a mouse click. */
-    // TODO test make sure user not clicking already picked square
     function addClickdetectPad() {
         var temp;
         var temp2;
@@ -153,27 +153,6 @@
         return randomNumber;
     }
 
-    /* function play() sets up a turn based loop to control the flow of the game. */
-    function play() {
-        var randomNumber;
-        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
-            randomNumber = Math.floor(Math.floor(Math.random() * 9));
-            while (argsObject.moves[randomNumber] !== 'U') {
-                randomNumber = Math.floor(Math.random() * 9);
-            }
-            //argsObject.playersTurn = false;
-            makeMove(randomNumber, 'AI');
-        }
-        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
-            randomNumber = Math.floor(Math.floor(Math.random() * 9));
-            while (argsObject.moves[randomNumber] !== 'U') {
-                randomNumber = Math.floor(Math.floor(Math.random() * 9));
-            }
-            //argsObject.playersTurn = false;
-            makeMove(randomNumber, 'AI');
-        }
-    }
-
     /* explore if possible to make a winning move by current player. Returns winning square if there is one. */
     function nextMoveWinTest(player) {
         var moves = '';
@@ -204,6 +183,25 @@
                 }
         }
         return -1;                                 // returns -1 if no winning move found.
+    }
+
+    /* function normalModePlay() sets up a turn based loop to control the flow of the game. */
+    function normalModePlay() {
+        var randomNumber;
+        if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
+            randomNumber = Math.floor(Math.floor(Math.random() * 9));
+            while (argsObject.moves[randomNumber] !== 'U') {
+                randomNumber = Math.floor(Math.random() * 9);
+            }
+            makeMove(randomNumber, 'AI');
+        }
+        else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {   // if player picked 'X' mark AND its the AI's move.
+            randomNumber = Math.floor(Math.floor(Math.random() * 9));
+            while (argsObject.moves[randomNumber] !== 'U') {
+                randomNumber = Math.floor(Math.floor(Math.random() * 9));
+            }
+            makeMove(randomNumber, 'AI');
+        }
     }
 
     /* https://www.quora.com/Is-there-a-way-to-never-lose-at-Tic-Tac-Toe */
@@ -619,19 +617,26 @@
         argsObject.xRef.style.margin = '0';
     }
 
+    function selectMode() {
+        if(argsObject.mode === 'normal') {
+            normalModePlay();
+        }
+        else {
+            hardModePlay();
+        }
+    }
+
     /* Listener added to detect player's choice of playing as X or O.  Once fired the group is disabled from further changes. */
     $(':radio').click(function (e) {
         document.getElementById('radioO').disabled = true;
         document.getElementById('radioX').disabled = true;
         if (e.currentTarget.id === 'radioX') {
             xClicked();
-            //play();
-            hardModePlay();
+            selectMode();
         }
         else {
             oClicked();
-            //play();
-            hardModePlay();
+            selectMode();
         }
     });
 
@@ -647,8 +652,7 @@
         if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {
             makeMove(argsObject.lastClickedSquare, 'player');
         }
-        //play();
-        hardModePlay();
+        selectMode();
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
@@ -658,6 +662,18 @@
         drawBoard();
     });
 
+    $('#mode').click(function() {
+        var current = $(this).html();
+        if(current === 'Select Hard Mode') {
+            $(this).html('Select Normal Mode');
+            argsObject.mode = 'hard';
+        }
+        else {
+            $(this).html('Select Hard Mode');
+            argsObject.mode = 'normal';
+        }
+        reset();
+    });
 
     function reset(useAlert, message) {
         if (useAlert) {
@@ -676,10 +692,8 @@
             argsObject.playersTurn = false;
             argsObject.nowPlaying = 'O';
         }
-        //play();
-        hardModePlay();
+        selectMode();
     }
-
     /* program entry point */
     init();
 })();
