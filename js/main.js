@@ -146,7 +146,7 @@
 
     /* pick a random move out of still available open squares.  */
     function makeRandomMove(maxValue) {
-        var randomNumber = Math.floor(Math.floor(Math.random() * (maxValue + 1)));
+        var randomNumber = Math.floor(Math.random() * (maxValue + 1));
         while (argsObject.moves[randomNumber] !== 'U') {
             randomNumber = Math.floor(Math.random() * (maxValue + 1));
         }
@@ -224,7 +224,7 @@
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {
             // *****AIs first move.*****
             if (argsObject.movesCounter === 0) {
-                move = openingMoves[Math.floor(Math.random() * 5)];                    // randomize an opening move. ( make game seem more natural )
+                move = openingMoves[makeRandomMove(5)];                    // randomize an opening move. ( make game seem more natural )
             }
             // *****AIs second move.*****
             else if (argsObject.movesCounter === 2) {
@@ -437,12 +437,13 @@
             argsObject.lastMoveAI = move;
             makeMove(move, 'AI');
         }
+        /*************************************************************************************************************************/
         /* Player picked 'X', Player moved first and now it is the AIs turn. */
         else if (argsObject.playerPiece === 'X' && argsObject.movesCounter % 2 !== 0) {
             // *****AIs first move.*****
             if (argsObject.movesCounter === 1) {
                 if (lastPlayer === 4) {                                           // player picked center square for their first move.
-                    move = corners[makeRandomMove(5)];                            // AI plays a random corner.
+                    move = corners[Math.floor(Math.random() * 4)];                            // AI plays a random corner.
                 }
                 else {
                     move = 4;                                                    // if player picked other than center, AI picks the center.
@@ -452,11 +453,11 @@
             else if (argsObject.movesCounter === 3) {
                 // AI in center and player last move was a corner.
                 if (lastAI === 4 && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {
-                    randomNum = makeRandomMove(4);
+                    randomNum = Math.floor(Math.random() * 4);
                     while (argsObject.moves[edges[randomNum]] !== 'U') {
-                        randomNum = makeRandomMove(4);                            // AI picks any edge.
+                        randomNum = Math.floor(Math.random() * 4);                            // AI picks any edge.
                     }
-                    move = randomNum;
+                    move = edges[randomNum];
                 }
                 // AI in center and player last move was a edge.
                 else if (lastAI === 4 && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {
@@ -490,30 +491,24 @@
                     else if ((argsObject.moves[1] === 'X' && argsObject.moves[5] === 'X') || (argsObject.moves[3] === 'X' && argsObject.moves[7] === 'X')) {
                         move = 8;
                     }
-                    else {
-                        winningMoveX = nextMoveWinTest('X');
-                        if (winningMoveX !== -1) {                                   // test if there is a winning player move to block.
-                            move = winningMoveX;
-                        }
+                }
+                else if(argsObject.moves[4] === 'X') {  // player in the center, AI on a corner.
+                    if((lastPlayer === '0' && lastAI === 8) || (lastPlayer === '8' && lastAI === 0)) {            // player picks another open corner.
+                        move = 2;
+                    }
+                    else if((lastPlayer === '2' && lastAI === 6) || (lastPlayer === '6' && lastAI === 2)) {
+                        move = 0;
                     }
                 }
             }
             // *****AIs third move.*****
             else if (argsObject.movesCounter === 5) {
                 if (argsObject.moves[4] === 'O') {
-                    randomNum = makeRandomMove(8);
-                    while (edges[randomNum] !== 'U') {
-                        randomNum = makeRandomMove(8);                            // AI picks any edge.
+                    randomNum = Math.floor(Math.random() * 4);
+                    while (argsObject.moves[edges[randomNum]] !== 'U') {
+                        randomNum = Math.floor(Math.random() * 4);                            // AI picks any edge.
                     }
-                    move = randomNum;
-                }
-                winningMoveX = nextMoveWinTest('X');
-                winningMoveO = nextMoveWinTest('O');
-                if (winningMoveO !== -1) {                                        // test if there is a AI winning move.
-                    move = winningMoveO;
-                }
-                else if (winningMoveX !== -1) {                                  // test if there is a winning player move to block.
-                    move = winningMoveX;
+                    move = edges[randomNum];
                 }
                 else {
                     move = makeRandomMove(8);
@@ -521,17 +516,15 @@
             }
             // *****AIs forth move.*****
             else if (argsObject.movesCounter === 7) {
-                winningMoveO = nextMoveWinTest('O');
-                winningMoveX = nextMoveWinTest('X');
-                if (winningMoveO !== -1) {                                        // test if there is a AI winning move.
-                    move = winningMoveO;
-                }
-                else if (winningMoveX !== -1) {                                   // test if there is a winning player move to block.
-                    move = winningMoveX;
-                }
-                else {
-                    move = makeRandomMove(8);
-                }
+
+            }
+            winningMoveO = nextMoveWinTest('O');
+            winningMoveX = nextMoveWinTest('X');
+            if (winningMoveO !== -1) {                                        // test if there is a AI winning move.
+                move = winningMoveO;
+            }
+            else if (winningMoveX !== -1) {                                   // test if there is a winning player move to block.
+                move = winningMoveX;
             }
             argsObject.lastMoveAI = move;
             makeMove(move, 'AI');
