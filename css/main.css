@@ -1,7 +1,6 @@
 /**
- * Created by Rick Stewart on 05/10/2016.
+ * Created by Rick Stewart on 06/09/2016.
  */
-
 @import url(https://fonts.googleapis.com/css?family=font-family=Indie+Flower|Fontdiner+Swanky);
 
 body {
@@ -14,8 +13,9 @@ body {
     height: 100%;
     line-height: 2.4rem;
     min-height: 100%;
+    min-width: 360px;
     display: flex;
-    overflow : hidden;
+    overflow: hidden;
     background: url("../images/starfield.gif");
 }
 
@@ -58,7 +58,7 @@ header img {
     display: inline-flex;
     font-size: 5.2em;
     padding: 1px;
-    margin: 10px 0 10px 0;
+    margin: 10px 0 10px 46px;
 }
 
 #header-text2 {
@@ -67,7 +67,7 @@ header img {
     font-size: 2.8em;
     letter-spacing: 0.05em;
     padding: 1px;
-    margin: 10px 0 0 30px;
+    margin: 10px 0 0 66px;
 }
 
 #header-about {
@@ -158,6 +158,7 @@ svg {
     margin-left: auto;
     margin-right: 6px;
 }
+
 .btn-primary {
     margin-right: auto;
     margin-left: 6px;
@@ -166,12 +167,321 @@ svg {
 
 /* Responsive section */
 
-@media all and (max-width: 900px) {
+@media all and (max-width: 1660px) {
+    #header-span-left {
+        flex-basis: 28%;
+    }
 
+    #header-span-right {
+        flex-basis: 72%;
+    }
+}
 
+@media all and (max-width: 1440px) {
+    #header-span-left {
+        flex-basis: 24%;
+    }
+
+    #header-span-right {
+        flex-basis: 76%;
+    }
+
+    #header-text1 {
+        font-size: 4.7em;
+        margin: 10px 0 10px 66px;
+    }
+
+    #header-text2 {
+        font-size: 2.3em;
+        margin: 10px 0 0 86px;
+    }
+}
+
+@media all and (max-width: 1220px) {
+    #header-span-left {
+        flex-basis: 22%;
+    }
+
+    #header-span-right {
+        flex-basis: 78%;
+    }
+
+    #header-text1 {
+        font-size: 4.5em;
+        margin: 10px 0 10px 60px;
+    }
+
+    #header-text2 {
+        font-size: 2.1em;
+        margin: 10px 0 0 80px;
+    }
+}
+
+@media all and (max-width: 1000px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 4.2em;
+        margin: 10px 0 6px 56px;
+    }
+
+    #header-text2 {
+        font-size: 1.8em;
+        margin: 6px 0 0 76px;
+    }
+
+    #header-about {
+        padding: 0.7% 4% 0 0;
+        font-size: 1.4em;
+    }
+
+    header img {
+        width: 100px;
+        height: 90px;
+        margin: 0 0 14px 14%;
+    }
+}
+
+@media all and (max-width: 880px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 4.0em;
+        margin: 6px 0 10px 50px;
+    }
+
+    #header-text2 {
+        font-size: 1.6em;
+        margin: 6px 0 0 70px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.2em;
+    }
+
+    header img {
+        width: 100px;
+        height: 90px;
+        margin: 0 0 14px 14%;
+    }
 }
 
 @media all and (max-width: 700px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
 
+    #header-span-right {
+        flex-basis: 84%;
+    }
 
+    #header-text1 {
+        font-size: 3.6em;
+        margin: 4px 0 10px 36px;
+    }
+
+    #header-text2 {
+        font-size: 1.5em;
+        margin: 2px 0 0 56px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.1em;
+    }
+
+    header img {
+        width: 90px;
+        height: 80px;
+        margin: 0 0 10px 12%;
+    }
+
+    #main-container {
+        margin: 140px auto 10px auto;
+    }
 }
+
+@media all and (max-width: 620px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 3.1em;
+        margin: 4px 0 10px 36px;
+    }
+
+    #header-text2 {
+        font-size: 1.4em;
+        margin: 2px 0 0 56px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.0em;
+    }
+
+    header img {
+        width: 80px;
+        height: 70px;
+        margin: 0 0 10px 12%;
+    }
+
+    #main-container {
+        margin: 120px auto 10px auto;
+    }
+}
+
+@media all and (max-width: 530px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 2.7em;
+        margin: 0 0 0 36px;
+    }
+
+    #header-text2 {
+        font-size: 1.2em;
+        margin: 0 0 0 56px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.0em;
+    }
+
+    header img {
+        width: 70px;
+        height: 60px;
+        margin: 0 0 10px 12%;
+    }
+
+    #main-container {
+        margin: 110px auto 10px auto;
+    }
+}
+
+@media all and (max-width: 450px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 2.4em;
+        margin: 0 0 0 36px;
+    }
+
+    #header-text2 {
+        font-size: 1.2em;
+        margin: 0 0 0 56px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.0em;
+    }
+
+    header img {
+        width: 60px;
+        height: 50px;
+        margin: 0 0 10px 12%;
+    }
+
+    #main-container {
+        margin: 100px auto 10px auto;
+    }
+}
+
+@media all and (max-width: 410px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 2.2em;
+        margin: 0 0 0 36px;
+    }
+
+    #header-text2 {
+        font-size: 1.1em;
+        margin: 0 0 0 56px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.0em;
+    }
+
+    header img {
+        width: 56px;
+        height: 46px;
+        margin: 0 0 10px 12%;
+    }
+
+    #main-container {
+        margin: 90px auto 10px auto;
+    }
+}
+
+@media all and (max-width: 380px) {
+    #header-span-left {
+        flex-basis: 16%;
+    }
+
+    #header-span-right {
+        flex-basis: 84%;
+    }
+
+    #header-text1 {
+        font-size: 2.0em;
+        margin: 0 0 0 36px;
+    }
+
+    #header-text2 {
+        font-size: 1.1em;
+        margin: 0 0 0 56px;
+    }
+
+    #header-about {
+        padding: 0.7% 2% 0 0;
+        font-size: 1.0em;
+    }
+
+    header img {
+        width: 52px;
+        height: 42px;
+        margin: 0 0 10px 12%;
+    }
+}
+
