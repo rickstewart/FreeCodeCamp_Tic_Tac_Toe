@@ -52,7 +52,7 @@
         else {                                                   // else viewport aspect ratio is portrait shaped.
             argsObject.gameboardLengthOfSide = argsObject.viewportWidth * 0.5;  // calculate length of a side of board container. ( container is square )
         }
-                                                                 // find upper left corner of container - X coordinate.
+        // find upper left corner of container - X coordinate.
         argsObject.zeroCoordinateX = (argsObject.viewportWidth / 2) - (argsObject.gameboardLengthOfSide / 2);
         argsObject.zeroCoordinateY = argsObject.headerHeight + 60; // find upper left corner of container - Y coordinate. ( 60 pixels down from header )
     }
@@ -155,7 +155,7 @@
     }
 
     /* function nextMoveWinTest() explores if possible to make a winning move by current player. Returns winning square
-    * if there is one. Passed argument is X or O. */
+     * if there is one. Passed argument is X or O. */
     function nextMoveWinTest(player) {
         var moves = '';
         var win = ['m', 'm', 'm'];                               // set all "hit" slots to "m" for missed hit.
@@ -188,7 +188,7 @@
     }
 
     /* function normalModePlay() sets the game to play in 'normal' mode, function picks AIs next move.
-    *  Normal mode consists of the AI making Random moves. */
+     *  Normal mode consists of the AI making Random moves. */
     function normalModePlay() {
         var randomNumber;
         if (argsObject.playerPiece === 'O' && argsObject.movesCounter % 2 === 0) {   // if player picked 'O' mark AND its the AI's move.
@@ -354,7 +354,7 @@
                 else if (argsObject.moves[4] === 'U') {                              // catch remaining conditions.
                     move = 4;
                 }
-                                                                                     // players last move to corner && player in center.
+                // players last move to corner && player in center.
                 else if (argsObject.moves[4] === 'O' && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {
                     if (argsObject.moves[0] === 'U') {                               // pick last still open corner.
                         move = 0;
@@ -369,7 +369,7 @@
                         move = 8;
                     }
                 }
-                                                                                     // player last move to edge && player in center.
+                // player last move to edge && player in center.
                 else if (argsObject.moves[4] === 'O' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {
                     if (lastPlayer === 1) {                                          // pick opposite edge.
                         move = 0;
@@ -384,7 +384,7 @@
                         move = 1;
                     }
                 }
-                                                                                     // AI in center && player last move an edge.
+                // AI in center && player last move an edge.
                 else if (argsObject.moves[4] === 'X' && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {
                     if (lastAI === 0 && lastPlayer === 1) {
                         move = 6;
@@ -454,7 +454,7 @@
             }
             // *****AIs second move.*****
             else if (argsObject.movesCounter === 3) {
-                                                                                     // AI in center and player last move was a corner.
+                // AI in center and player last move was a corner.
                 if (lastAI === 4 && (lastPlayer === 0 || lastPlayer === 2 || lastPlayer === 6 || lastPlayer === 8)) {
                     randomNum = Math.floor(Math.random() * 4);
                     while (argsObject.moves[edges[randomNum]] !== 'U') {
@@ -462,7 +462,7 @@
                     }
                     move = edges[randomNum];
                 }
-                                                                                     // AI in center and player last move was a edge.
+                // AI in center and player last move was a edge.
                 else if (lastAI === 4 && (lastPlayer === 1 || lastPlayer === 3 || lastPlayer === 5 || lastPlayer === 7)) {
                     if (argsObject.moves[0] === 'X' && lastPlayer === 5) {
                         move = 7;
@@ -495,11 +495,11 @@
                         move = 8;
                     }
                 }
-                else if(argsObject.moves[4] === 'X') {                               // player in the center, AI on a corner.
-                    if((lastPlayer === 0 && lastAI === 8) || (lastPlayer === 8 && lastAI === 0)) {   // player picks another open corner.
+                else if (argsObject.moves[4] === 'X') {                               // player in the center, AI on a corner.
+                    if ((lastPlayer === 0 && lastAI === 8) || (lastPlayer === 8 && lastAI === 0)) {   // player picks another open corner.
                         move = 2;
                     }
-                    else if((lastPlayer === 2 && lastAI === 6) || (lastPlayer === 6 && lastAI === 2)) {
+                    else if ((lastPlayer === 2 && lastAI === 6) || (lastPlayer === 6 && lastAI === 2)) {
                         move = 0;
                     }
                     else {
@@ -627,7 +627,7 @@
 
     /* function selectMode() steers game play in the correct game mode. */
     function selectMode() {
-        if(argsObject.mode === 'normal') {
+        if (argsObject.mode === 'normal') {
             normalModePlay();
         }
         else {
@@ -672,9 +672,9 @@
     });
 
     /* Listener added to detect if player has chosen to switch play mode - Normal to Hard or vise versa. */
-    $('#mode').click(function() {                                // detect 'Change Mode' button clicked.
+    $('#mode').click(function () {                                // detect 'Change Mode' button clicked.
         var current = $(this).html();                            // retrieve current state.
-        if(current === 'Select Hard Mode') {
+        if (current === 'Select Hard Mode') {
             $(this).html('Select Normal Mode');                  // change button text.
             argsObject.mode = 'hard';                            // toggle to 'Hard' mode.
         }
@@ -706,7 +706,7 @@
         }
         selectMode();                                            // play first round, either 'Normal' or 'Hard'.
     }
-    
+
     /* program entry point */
     init();
 })();
