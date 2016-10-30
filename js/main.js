@@ -678,14 +678,6 @@
     });
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
-    // $('#canvas_container').on('click', '.clickPad', function (e) {      // syntax for Listener on dynamically created content.
-    //     argsObject.lastClickedSquare = e.currentTarget.id;       // get id of clicked square.
-    //     if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {   // test that square was available.
-    //         makeMove(argsObject.lastClickedSquare, 'player');    // execute players move.
-    //     }
-    //     selectMode();                                            // its now AIs turn.
-    // });
-
     $('#canvas_container').on('click', '.clickPad', function (e) {      // syntax for Listener on dynamically created content.
         argsObject.lastClickedSquare = e.currentTarget.id;       // get id of clicked square.
         var promise;
