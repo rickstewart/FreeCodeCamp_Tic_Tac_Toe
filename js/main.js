@@ -89,18 +89,35 @@
     /* function makeMove() is passed a tile number and whose turn it currently is, and then calls a function to have drawn
      * the appropriate X or O mark on the board. */
     function makeMove(tilePicked, whoseTurn) {
+        var promise;
+        var finished = false;
         if (argsObject.playerPiece !== '') {                     // board state disabled unless player selected a Mark.
             if (whoseTurn === 'player' && argsObject.playersTurn) {      // players tern to move.
                 argsObject.playersTurn = !argsObject.playersTurn;        // flip player / AI state.
                 argsObject.movesCounter++;
-                argsObject.playerPiece === 'X' ? drawX(tilePicked) : drawO(tilePicked);   // draw Mark.
+                promise = new Promise(function(resolve, reject) {
+                    finished = argsObject.playerPiece === 'X' ? drawX(tilePicked) : drawO(tilePicked);     // draw Mark.
+                    if(finished) {
+                        resolve();
+                    }
+                });
             }
             else if (whoseTurn === 'AI' && !argsObject.playersTurn) {    // AIs turn to move
                 argsObject.playersTurn = !argsObject.playersTurn;        // flip player / AI state.
                 argsObject.movesCounter++;
-                argsObject.playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // draw Mark.
+                promise = new Promise(function(resolve, reject) {
+                    finished = argsObject.playerPiece === 'X' ? drawO(tilePicked) : drawX(tilePicked);   // draw Mark.
+                    if(finished) {
+                        resolve();
+                    }
+                });
             }
         }
+        promise.then(function() {
+            setTimeout(function() {
+                return true;
+            },100);
+        });
     }
 
     /* function drawX() draws a stylized X on the board. The parameter 'square' is an integer from 0 - 8
@@ -118,7 +135,9 @@
             'stroke-width': 4
         });
         argsObject.nowPlaying = 'X';
-        checkForWinOrTie();
+        setTimeout(function() {
+            checkForWinOrTie();
+        },100);
     }
 
     /* function drawO() draws a stylized O on the board. The parameter 'square' is an integer value from 0 - 8
@@ -131,7 +150,9 @@
             'stroke-width': 4
         });
         argsObject.nowPlaying = 'O';
-        checkForWinOrTie();
+        setTimeout(function() {
+            checkForWinOrTie();
+        },100);
     }
 
     /* function drawWinningLine() is called when either the player or AI wins.  The function draws a straight line
@@ -207,7 +228,7 @@
         }
     }
 
-    /* function normalModePlay() sets the game to play in 'hard' mode, function looks for AIs next move.
+    /* function hardlModePlay() sets the game to play in 'hard' mode, function looks for AIs next move.
      * Hard mode consists of the AI making intelligent moves. At best Player can tie, but not win. */
     function hardModePlay() {
         var corners = [0, 2, 6, 8];                              // array of game board corners.
@@ -567,14 +588,15 @@
                     }
                     if (won) {                                   // if winning combination found, won is true.
                         drawWinningLine(winningPattern);
-                        if (!argsObject.playersTurn) {           // if won == true and playersTurn == false, player is the winner.
-                            tripped = true;
-                            reset(true, 'You Won!');             // reset for next game.
-                        }
-                        else {                                   // else it was the AI's win.
-                            tripped = true;
-                            reset(true, 'You Lose!');            // reset for next game.
-                        }
+                        tripped = true;
+                        setTimeout(function() {
+                            if (!argsObject.playersTurn) {           // if won == true and playersTurn == false, player is the winner.
+                                reset(true, 'You Won!');             // reset for next game.
+                            }
+                            else {                                   // else it was the AI's win.
+                                reset(true, 'You Lose!');            // reset for next game.
+                            }
+                        },100);
                     }
                     if (k === 7) {                               // true if all possible winning combinations have been tested.
                         tripped = true;
@@ -583,7 +605,7 @@
                         break;
                     }
                 }
-                if (argsObject.movesCounter === 9) {             // all 9 moves taken, and its a tie.
+                if (argsObject.movesCounter === 9 && !won) {     // all 9 moves taken, and its a tie.
                     reset(true, 'Its a Tie!');                   //  reset for next game.
                 }
             }
@@ -656,12 +678,31 @@
     });
 
     /* Listener added to detect when a player has made a move, and which square was clicked. Update game board and record move. */
+    // $('#canvas_container').on('click', '.clickPad', function (e) {      // syntax for Listener on dynamically created content.
+    //     argsObject.lastClickedSquare = e.currentTarget.id;       // get id of clicked square.
+    //     if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {   // test that square was available.
+    //         makeMove(argsObject.lastClickedSquare, 'player');    // execute players move.
+    //     }
+    //     selectMode();                                            // its now AIs turn.
+    // });
+
     $('#canvas_container').on('click', '.clickPad', function (e) {      // syntax for Listener on dynamically created content.
         argsObject.lastClickedSquare = e.currentTarget.id;       // get id of clicked square.
+        var promise;
+        var finished = false;
         if (argsObject.moves[argsObject.lastClickedSquare] === 'U') {   // test that square was available.
-            makeMove(argsObject.lastClickedSquare, 'player');    // execute players move.
+            promise = new Promise(function(resolve, reject) {
+                finished = makeMove(argsObject.lastClickedSquare, 'player');    // execute players move.
+                setTimeout(function() {
+                    resolve();
+                },100);
+            });
         }
-        selectMode();                                            // its now AIs turn.
+        promise.then(function() {
+            setTimeout(function() {
+                selectMode();                                // its now AIs turn.
+            }, 200);                                         // slight delay in AI making move, just cosmetic.
+        });
     });
 
     /* Listener added to detect changes to the viewport size and adjust board accordingly. */
